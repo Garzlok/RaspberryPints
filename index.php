@@ -154,7 +154,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 	<head>
-		<title>RaspberryPints</title>
+		<title>Gierlach's Peak RaspberryPints</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<!-- Set location of Cascading Style Sheet -->
 		<link rel="stylesheet" type="text/css" href="style.css">
@@ -173,12 +173,35 @@
 		} ?>
 		
 		<link rel="shortcut icon" href="img/pint.ico">
+				
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		
+		<link href="apple-touch-icon.png" rel="apple-touch-icon" />
+        <link href="icon-hires.png" rel="icon-hires" />
+		
+        <script type="text/javascript"> 
+        if(("standalone" in window.navigator) && window.navigator.standalone){ 
+        var noddy, remotes = false; 
+        document.addEventListener('click', function(event) { 
+        noddy = event.target; 
+        while(noddy.nodeName !== "A" && noddy.nodeName !== "HTML") {
+        noddy = noddy.parentNode;
+        } 
+        if('href' in noddy && noddy.href.indexOf('http') !== -1 && (noddy.href.indexOf(document.location.host) !== -1 || remotes))
+        {
+        event.preventDefault();
+        document.location.href = noddy.href;
+        } 
+        },false);
+        }
+        </script>
+		
 <!-- <meta name="viewport" content="initial-scale=0.7,width=device-width,height=device-height,target-densitydpi=device-dpi,user-scalable=yes" />  -->		
 		<script type="text/javascript" src="admin/scripts/ws.js"></script>	
 	</head> 
 
 <!--<body> -->
-<body onload="wsconnect(); <?php if($config[ConfigNames::ShowTempOnMainPage])echo "setTimeout(function(){window.location.reload(1);}, 60000);"; ?>">
+<body onload="wsconnect(); <?php if($config[ConfigNames::ShowTempOnMainPage])echo "setTimeout(function(){window.location.reload(1);}, 900000);"; ?>">
 		<div class="bodywrapper" id="mainTable">
 			<!-- Header with Brewery Logo and Project Name -->
 			<div class="header clearfix">
@@ -186,7 +209,7 @@
 					<?php if($config[ConfigNames::UseHighResolution]) { ?>			
 						<a href="admin/admin.php"><img src="<?php echo $config[ConfigNames::LogoUrl] . "?" . time(); ?>" height="200" alt=""></a>
 					<?php } else { ?>
-						<a href="admin/admin.php"><img src="<?php echo $config[ConfigNames::LogoUrl] . "?" . time(); ?>" height="100" alt=""></a>
+						<a href="admin/admin.php"><img src="<?php echo $config[ConfigNames::LogoUrl] . "?" . time(); ?>" height="150" alt=""></a>
 					<?php } ?>
 				</div>
 				<div class="HeaderCenter">
@@ -234,7 +257,7 @@
           	     ?>
           			   <div class="temp-container">
           			   <div class="temp-indicator">
-          			   		<div class="temp-full" style="height:<?php echo convert_temperature($temp, $tempUnit, UnitsOfMeasure::TemperatureFahrenheight); ?>%; padding-right: 50px"></div>
+          			   		<div class="temp-full" style="height:<?php echo convert_temperature($temp, $tempUnit, UnitsOfMeasure::TemperatureFahrenheight); ?>%; padding-right: 5px"></div>
           			   </div>
           		        </div>
           		<?php }elseif($config[ConfigNames::ShowLastPour]) { ?>
