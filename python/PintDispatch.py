@@ -49,13 +49,13 @@ MCAST_PORT = 0xBEE2
 MCAST_RETRY_ATTEMPTS = 10
 MCAST_RETRY_SLEEP_SEC=5
 
-def debug(msg):
+def debug(msg, process="PintDispatch", logDB=True):
     logger = Logger()
-    logger.debug(msg)
+    logger.debug(msg, process, logDB)
                  
-def log(msg):
+def log(msg, process="PintDispatch", isDebug=False, logDB=True):
     logger = Logger()
-    logger.log(msg)
+    logger.log(msg, process, isDebug, logDB)
    
 def parseConnFile():
     connFileName = ADMIN_INCLUDES_DIR + "/conn.php"
@@ -74,19 +74,27 @@ def parseConnFile():
     return connDict
 dbArgs=parseConnFile()
 def connectDB():
-    con = mdb.connect(dbArgs['host'],dbArgs['username'],dbArgs['password'],dbArgs['db_name'])
+    while True:
+        try:
+            con = mdb.connect(dbArgs['host'],dbArgs['username'],dbArgs['password'],dbArgs['db_name'])
+            break
+        except:
+            debug(msg="Database Connection Lost, retrying", process="PintDispatch", logDB=False)
+            time.sleep(1)
+        
     return con
 
 loggerLastClean = None
 class Logger ():
-    def debug(self, msg, process="PintDispatch"):
+    def debug(self, msg, process="PintDispatch", logDB=True):
         if(config['dispatch.debug']):
-            self.log(msg, process, True)
+            self.log(msg, process, True, logDB)
                      
-    def log(self, msg, process="PintDispatch", isDebug=False):
+    def log(self, msg, process="PintDispatch", isDebug=False, logDB=True):
         print datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') + " RPINTS: " + msg 
         sys.stdout.flush() 
-        self.logDB(msg, process, isDebug)
+        if logDB:
+            self.logDB(msg, process, isDebug)
         
     def logDB(self, msg, process="PintDispatch", isDebug=False):
         max_row_check = 2
@@ -312,12 +320,23 @@ class PintDispatch(object):
             cursor.execute("INSERT INTO tempProbes (name, type) VALUES('"+probe+"', 0)")
         con.commit()
         con.close()        
-    def saveTemp(self, probe, temp, tempUnit):
+    def saveTemp(self, probe, temp, tempUnit, takenDate):
         insertLogSql = "INSERT INTO tempLog (probe, temp, tempUnit, takenDate) "
-        insertLogSql += "VALUES('"+probe+"',"+str(temp)+"+ COALESCE((SELECT manualAdj FROM tempProbes WHERE name = '"+probe+"'), 0), '"+str(tempUnit)+"', NOW());"
+        insertLogSql += "VALUES('"+probe+"',"+str(temp)+"+ COALESCE((SELECT manualAdj FROM tempProbes WHERE name = '"+probe+"'), 0), '"+str(tempUnit)+"', '"+takenDate+"');"
         con = connectDB()
         cursor = con.cursor(mdb.cursors.DictCursor)
         result = cursor.execute(insertLogSql)
+        con.commit()
+        con.close()
+        self.archiveTemp()
+        
+    def saveTemps(self, temps):
+        con = connectDB()
+        cursor = con.cursor(mdb.cursors.DictCursor)
+        for temp in temps:
+            insertLogSql = "INSERT INTO tempLog (probe, temp, tempUnit, takenDate) "
+            insertLogSql += "VALUES('"+temp[0]+"',"+str(temp[1])+"+ COALESCE((SELECT manualAdj FROM tempProbes WHERE name = '"+temp[0]+"'), 0), '"+str(temp[2])+"', '"+temp[3]+"');"
+            result = cursor.execute(insertLogSql)
         con.commit()
         con.close()
         self.archiveTemp()

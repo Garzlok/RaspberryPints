@@ -20,8 +20,10 @@
 	    "og" => 'v65',
 	    "fg" => 'v66',
 	    "remainAmount" => 'v51',
-	    "lastPour" => 'v47'
+	    "lastPour" => 'v47',
+	    "temp" => 'v69'
 	);
+	$plaatoTemps = array();
 	//This can be used to choose between CSV or MYSQL DB
 	$db = true;
 	
@@ -73,8 +75,21 @@
     			        $plaatoValue = file_get_contents("http://plaato.blynk.cc/".$b['plaatoAuthToken']."/get/".$pin);
     			        $plaatoValue = substr($plaatoValue, 2, strlen($plaatoValue)-4);
     			        if( $value == 'fg' || $value == 'og' ) $plaatoValue = $plaatoValue/1000;
-    			        if( $plaatoValue !== NULL && $plaatoValue != '') $beeritem[$value] = $plaatoValue;
-    			        //echo $value."=http://plaato.blynk.cc/".$b['plaatoAuthToken']."/get/".$pin."-".$beeritem[$value].'-'.$plaatoValue.'<br/>';
+    			        if( $value == "temp"){
+    			            if($config[ConfigNames::UsePlaatoTemp])
+    			            {
+    			                $tempInfo["tempUnit"] = (strpos($plaatoValue,"C")?UnitsOfMeasure::TemperatureCelsius:UnitsOfMeasure::TemperatureFahrenheight);
+    			                $tempInfo["temp"] = substr($plaatoValue, 0, strpos($plaatoValue, '°'));
+    			                $tempInfo["probe"] = $b['id'];
+    			                $tempInfo["takenDate"] = date('Y-m-d H:i:s');
+    			                array_push($plaatoTemps, $tempInfo);
+    			            }
+    			            //echo $value."=http://plaato.blynk.cc/".$b['plaatoAuthToken']."/get/".$pin."-".$plaatoTemp.'-'.$plaatoValue.'<br/>';
+        			    }else{
+        			        if( $plaatoValue !== NULL && $plaatoValue != '') $beeritem[$value] = $plaatoValue;
+    			            //echo $value."=http://plaato.blynk.cc/".$b['plaatoAuthToken']."/get/".$pin."-".$beeritem[$value].'-'.$plaatoValue.'<br/>';
+        			    }
+    			        
     			    }
     			}
 			}
@@ -175,15 +190,13 @@
 					<?php } ?>
 				</div>
 				<div class="HeaderCenter">
-					<h1 id="HeaderTitle">
-						<?php
-							if (strlen($config[ConfigNames::HeaderText]) > ($config[ConfigNames::HeaderTextTruncLen])) {
-								echo htmlentities(substr($config[ConfigNames::HeaderText],0,$config[ConfigNames::HeaderTextTruncLen]) . "...");
-							} else {
-								echo htmlentities($config[ConfigNames::HeaderText]);
-							}
-						?>
-					</h1>
+					<?php
+						if (strlen($config[ConfigNames::HeaderText]) > ($config[ConfigNames::HeaderTextTruncLen])) {
+							echo htmlentities(substr($config[ConfigNames::HeaderText],0,$config[ConfigNames::HeaderTextTruncLen]) . "...");
+						} else {
+							echo htmlentities($config[ConfigNames::HeaderText]);
+						}
+					?>
 				</div>
           		<?php 
       		        $temp = null;
@@ -191,17 +204,23 @@
       		    ?>
               		<?php 
               		    $tempDisplay = "";
+              		    $date = null;
               		    if($config[ConfigNames::ShowTempOnMainPage]) {
-              		       $tempProbeManager = new TempProbeManager();
-              		       $tempInfos = $tempProbeManager->get_lastTemp();
-              		       foreach($tempInfos as $tempInfo){
-              		           $temp = $tempInfo["temp"];
-              		           $tempUnit = $tempInfo["tempUnit"];
-              		           $probe = $tempInfo["probe"];
-              		           $date = $tempInfo["takenDate"];
-              		           $tempDisplay .= sprintf('%s:%0.1f%s<br/>', $probe, convert_temperature($temp, $tempUnit, $config[ConfigNames::DisplayUnitTemperature]), $config[ConfigNames::DisplayUnitTemperature] );
-              		       }
-              		       if( isset($date) && isset($tempDisplay) )$tempDisplay .= sprintf('%s', str_replace(' ', "<br/>", $date));
+              		        if(!isset($plaatoTemps) || count($plaatoTemps) == 0)
+              		        {
+                  		       $tempProbeManager = new TempProbeManager();
+                  		       $tempInfos = $tempProbeManager->get_lastTemp();
+              		        }else{
+              		            $tempInfos = $plaatoTemps;
+              		        }
+              		        foreach($tempInfos as $tempInfo){
+              		            $temp = $tempInfo["temp"];
+              		            $tempUnit = $tempInfo["tempUnit"];
+              		            $probe = $tempInfo["probe"];
+              		            $date = MAX($tempInfo["takenDate"], $date);
+              		            $tempDisplay .= sprintf('%s:%0.1f%s<br/>', $probe, convert_temperature($temp, $tempUnit, $config[ConfigNames::DisplayUnitTemperature]), $config[ConfigNames::DisplayUnitTemperature] );
+              		        }
+              		        if( isset($date) && isset($tempDisplay) )$tempDisplay .= sprintf('%s', str_replace(' ', "<br/>", $date));
               		    }
               		    echo '<div class="HeaderRight" style="width:15%;text-align:right;vertical-align:middle">'.$tempDisplay.'</div>';     
               		    
@@ -215,7 +234,7 @@
           	     ?>
           			   <div class="temp-container">
           			   <div class="temp-indicator">
-          			   		<div class="temp-full" style="height:<?php echo $temp; ?>%; padding-right: 50px"></div>
+          			   		<div class="temp-full" style="height:<?php echo convert_temperature($temp, $tempUnit, UnitsOfMeasure::TemperatureFahrenheight); ?>%; padding-right: 50px"></div>
           			   </div>
           		        </div>
           		<?php }elseif($config[ConfigNames::ShowLastPour]) { ?>

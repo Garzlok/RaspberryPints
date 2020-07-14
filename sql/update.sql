@@ -29,10 +29,10 @@ BEGIN
             SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
             WHERE
               (lower(table_name) = lower(tablename))
-              AND (lower(table_schema) = lower(dbname))
+              AND (table_schema = dbname)
               AND (lower(column_name) = lower(columnname))
           ) > 0,
-          "SELECT 1",
+          CONCAT("select '",dbname,"','",tableName,"','",columnName,"','",columnType,"','exists'"),
           CONCAT("ALTER TABLE ", tablename, " ADD ", columnname, " ", columnType)
         )
     );
@@ -601,10 +601,13 @@ INSERT IGNORE INTO `config` ( configName, configValue, displayName, showOnPanel,
 ( 'hozTapListCol', '0', 'Number Of horizontal tap List Beer Column', '1', '2|1', NOW(), NOW() );
 
 INSERT IGNORE INTO `config` ( configName, configValue, displayName, showOnPanel, createdDate, modifiedDate ) VALUES
-( 'usePlaato', '0', 'Use Plaato Values', '1', NOW(), NOW() );
+( 'usePlaato', '0', 'Use Plaato Values', '1', NOW(), NOW() ),
+( 'usePlaatoTemp', '0', 'Use Plaato Temp', '1', NOW(), NOW() );
 
 
 CALL addColumnIfNotExist(DATABASE(), 'tapconfig', 'plaatoAuthToken', 'tinytext NULL' );
+CALL addColumnIfNotExist(DATABASE(), 'tapconfig', 'loadCellScaleRatio', 'int(11) DEFAULT NULL' );
+CALL addColumnIfNotExist(DATABASE(), 'tapconfig', 'loadCellTareOffset', 'int(11) DEFAULT NULL' );
 
 CALL addColumnIfNotExist(DATABASE(), 'kegs', 'hasContinuousLid', 'int(11) DEFAULT 0' );
 

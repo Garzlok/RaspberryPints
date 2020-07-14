@@ -27,7 +27,7 @@
 		<tr class="<?php if($row++%2 > 0){ echo 'altrow'; } ?>">
 			<?php if($editting || $config[ConfigNames::ShowBeerTableHead]){?>
 			<td>
-				<?php if( isset($noTableHead) && $noTableHead){?>TAP<br><?php }?>
+				<?php if( (isset($noTableHead) && $noTableHead) || $editting){?>TAP<br><?php }?>
 				<input type="hidden" name="<?php echo ConfigNames::TapNumColNum;?>" id="<?php echo ConfigNames::TapNumColNum;?>" value="<?php echo abs($config[ConfigNames::TapNumColNum]);?>"/>
 			</td>
 			<?php }?>
@@ -92,8 +92,9 @@
 							<div class="srm-stroke"></div> 
 						<?php }?>
 					</div>
-					
-					<h2><?php echo $beer['srm']; ?> SRM</h2>
+					<?php if($config[ConfigNames::ShowSrmValue]){?>
+						<h2><?php echo $beer['srm']; ?> SRM</h2>
+					<?php }?>
 				<?php }elseif(isset($beer) && $beer['beername']){ echo "<h2>N/A</h2>"; } ?>
 				</td>
 				<?php DisplayEditShowColumn($editting, $config, $col, ConfigNames::SrmColNum)?>
@@ -134,10 +135,14 @@
 					</h3>
 					<?php } ?>
 					<?php if($beer['ibu'] != ''){?>
+						<?php if($config[ConfigNames::ShowIbuImg]){ ?>
     					<div class="ibu-container">
     						<div class="ibu-indicator"><div class="ibu-full" style="height:<?php echo $beer['ibu'] > 100 ? 100 : $beer['ibu']; ?>%"></div></div>
     					</div>
+						<?php } ?>
+						<?php if($config[ConfigNames::ShowIbuValue]){ ?>
     					<h2><?php echo $beer['ibu']; ?> IBU</h2>
+						<?php } ?>
 					<?php }else{ echo "<h2>N/A</h2>"; } ?>
 				<?php } ?>
 				</td>

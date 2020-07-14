@@ -38,10 +38,6 @@ if (isset ( $_POST ['saveTapConfig'] )) {
 		if(count($kegSelArr) > 0 && isset($kegSelArr[0]))$kegId = $kegSelArr[0];
 		if($kegId){			
 		    $selectedBeerId = explode("~", $_POST['beerId'][$ii])[0];
-		    if( ( !isset($kegSelArr[1]) || !$kegSelArr[1] || $tap->get_beerId() != $selectedBeerId ) ||
-			    ( !isset($kegSelArr[2]) || !$kegSelArr[2] || $tap->get_kegId() != $kegId ) ){
-			        $tapManager->tapKeg($tap, $kegId, $selectedBeerId);		
-			}
 			$keg = $kegManager->GetById($kegId);
 			if( $_POST ['startAmount'][$ii] != $_POST ['startAmountOriginal'][$ii]) {
 			    $keg->set_startAmount($_POST['startAmount'][$ii]);
@@ -73,6 +69,10 @@ if (isset ( $_POST ['saveTapConfig'] )) {
     		    $keg->set_keggingTempUnit($_POST ['keggingTempUnit'][$ii]);
     		}
 			$kegManager->Save($keg);
+		    if( ( !isset($kegSelArr[1]) || !$kegSelArr[1] || $tap->get_beerId() != $selectedBeerId ) ||
+			    ( !isset($kegSelArr[2]) || !$kegSelArr[2] || $tap->get_kegId() != $kegId ) ){
+			        $tapManager->tapKeg($tap, $kegId, $selectedBeerId);		
+			}
 		}else if($tap->get_kegId()){
 			//User indicated the tap was untapped
 			$tapManager->closeTap($tap, false);	
@@ -431,7 +431,7 @@ include 'top_menu.php';
     							<input type="text" id="tapNumber<?php echo $tap->get_id();?>" class="smallbox" name="tapNumber[]" value="<?php echo $tap->get_tapNumber(); ?>" <?php echo $style != ""?'style="'.$style.'"':""; ?> />
     							<a href="image_prompt.php?id=<?php echo $tap->get_id();?>" target="_blank"><span class="tooltip"><img src="img/icons/upload.png" /><span class="tooltiptext">Upload Tap Image</span></span></a>
                             	<?php if($hasImg) {?>
-                            		<a href="image_remove.php?id=<?php echo $tap->get_id();?>" target="_blank"><span class="tooltip"><img src="img/icons/icon_missing.png" /><span class="tooltiptext">Remove Tap Image</span></span></a>
+                            		<a href="image_remove.php?id=<?php echo $tap->get_id();?>&type=tap" target="_blank"><span class="tooltip"><img src="img/icons/icon_missing.png" /><span class="tooltiptext">Remove Tap Image</span></span></a>
                             	<?php }?>
                             </div>
                             <?php } ?>

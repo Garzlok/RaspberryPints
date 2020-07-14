@@ -12,6 +12,7 @@
 		$tapOrBottle = $containerType;
 		$editingTable = $editing;
 		$config = getAllConfigs();
+		if( $editing ) $config[ConfigNames::ShowVerticleTapList] = "1";
 		if($config[ConfigNames::ShowVerticleTapList]){
 		  include "beerListTableVerticle.php";
 		} else {
@@ -35,8 +36,9 @@
 	function DisplayEditShowColumn($editting, $config, $col, $configName){
 	    if( !$editting ) return;
 	    
-	    echo '<br/>';
+	    echo '<td>';
 	    echo '<input type="radio" value="1"  name="show'.$configName.'" id="show'.$configName.'" '.($config[$configName] > 0?"checked":"").'/>Visible';
 	    echo '<input type="radio" value="-1" name="show'.$configName.'" id="show'.$configName.'" '.($config[$configName] < 0?"checked":"").'/>Hidden';
+	    echo '</td>';
 	}
 ?>
