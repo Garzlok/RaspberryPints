@@ -132,7 +132,7 @@ if($editting) $maxTapCol = 1;
 							$style = "";							
 							if(isset($beer) && isset($beer['tapRgba']) && $beer['tapRgba']) $style = "background-color: ".$htmlHelper->CreateRGB($beer['tapRgba']);
 							$imgs = glob ( 'img/tap/tap'.$beer['id'].'.*' );
-							if(count($imgs) > 0) $style .= ($style != ""?";":"").'background:url('.$imgs[0].') no-repeat center; background-size:cover; -webkit-border-radius:0px; -mox-border-radius:0px; height:100px; width:50px';
+							if(count($imgs) > 0) $style .= ($style != ""?";":"").'background:url('.$imgs[0].') no-repeat center; background-size:cover; -webkit-border-radius:0px; -mox-border-radius:0px; height:50px; width:54px';
 							?>
 							<span class="tapcircle" style="<?php echo $style; ?>">
 		                    	<?php if(isset($beer['tapNumber']) && $beer['tapNumber'] != 0){echo $beer['tapNumber'];}elseif(count($imgs) == 0){echo $i;}else{echo '&nbsp;';} ?>
@@ -153,7 +153,7 @@ if($editting) $maxTapCol = 1;
 				<?php if(($editting || $config[ConfigNames::ShowSrmCol]) &&
 				         beerListShouldDisplayRow($editting, $col, $config[ConfigNames::SrmColNum])){ ?>
 					<td class="srm">
-					<?php if(isset($beer) && $beer['beername'] && $beer['srm'] > 0){ ?>						
+					<h2><?php if(isset($beer) && $beer['beername'] && $beer['srm'] > 0){ ?> SRM	</h2>						
 						<div class="srm-container">
 							<?php if($config[ConfigNames::ShowSrmImg]){?>
 								<?php echo '<img src="'.($editting?'../':'').'img/srm/'.($beer['srm']>40?40:floor($beer['srm'])).'-srm.png" />'?>
@@ -163,9 +163,7 @@ if($editting) $maxTapCol = 1;
 							<?php }?>
 						</div>
 						
-    					<?php if($config[ConfigNames::ShowSrmValue]){?>
-    						<h2><?php echo $beer['srm']; ?> SRM</h2>
-						<?php }?>
+    					<h2><?php echo $beer['srm']; ?></h2>
 					<?php }elseif(isset($beer) && $beer['beername']){ echo "<h2>N/A</h2>"; } ?>
 					</td>
 				<?php } ?>
@@ -236,8 +234,9 @@ if($editting) $maxTapCol = 1;
                         <?php } ?>
                         
                         <?php if(($editting || $config[ConfigNames::ShowBeerStyle]) && $beer['style']){ ?>
-                            <h2 class="subhead"><?php echo str_replace("_","",$beer['style']); ?></h2>
-                        <?php } ?>
+                            <h2 style="text-align: left; text-shadow: 1.5px 1.5px 4px #ff6600;"><?php echo str_replace("_","",$beer['style']); ?></h2>
+
+          <?php } ?>
                         
                         <?php if($config[ConfigNames::ShowBeerNotes]){ ?>
                             <p><?php echo $beer['notes']; ?></p>
