@@ -2,26 +2,26 @@
 require_once __DIR__.'/manager.php';
 require_once __DIR__.'/../models/fermentable.php';
 
-class FermentableManager extends Manager{
+class AccoladeManager extends Manager{
 	
 	protected function getPrimaryKeys(){
 		return ["id"];
 	}
 	protected function getColumns(){
-		return ["name", "type", "srm", "notes"];
+		return ["name", "type", "rgb", "notes"];
 	}
 	protected function getUpdateColumns(){
 	    return ["name", "type", "srm", "notes"];
 	}
 	protected function getInsertColumns(){return $this->getUpdateColumns();}
 	protected function getTableName(){
-		return "fermentables";
+		return "accolades";
 	}
 	protected function getViewName(){
-	    return "vwFermentables";
+	    return "vwAccolades";
 	}
 	protected function getDBObject(){
-		return new Fermentable();
+		return new Accolade();
 	}	
 	
 	function GetByName($name){

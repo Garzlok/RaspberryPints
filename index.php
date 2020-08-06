@@ -65,7 +65,8 @@
 				"rating" => $b['rating'],
 				"srmRgb" => $b['srmRgb'],
 				"valvePinState" => $b['valvePinState'],
-				"plaatoAuthToken" => $b['plaatoAuthToken']
+			    "plaatoAuthToken" => $b['plaatoAuthToken'],
+			    "accolades" => $b['accolades']
 			);
 			if($config[ConfigNames::UsePlaato]) {
     			if(isset($b['plaatoAuthToken']) && $b['plaatoAuthToken'] !== NULL && $b['plaatoAuthToken'] != '')
@@ -130,7 +131,8 @@
 				"capNumber" => $b['capNumber'],
 				"rating" => $b['rating'],
 				"srmRgb" => $b['srmRgb'],
-				"valvePinState" => $b['valvePinState']
+				"valvePinState" => $b['valvePinState'],
+				"accolades" => $b['accolades']
 			);
 			$bottles[$rowNumber] = $beeritem;
       		$rowNumber = $rowNumber+1;
@@ -198,6 +200,22 @@
 
 <!-- <meta name="viewport" content="initial-scale=0.7,width=device-width,height=device-height,target-densitydpi=device-dpi,user-scalable=yes" />  -->
 		<script type="text/javascript" src="admin/scripts/ws.js"></script>
+    <script type="text/javascript">
+        function toggleFullScreen() {
+             var doc = window.document;
+              var docEl = doc.documentElement;
+
+              var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+              var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+             if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+                requestFullScreen.call(docEl);
+              }
+              else {
+               cancelFullScreen.call(doc);
+             }
+           }
+         </script>  
 	</head>
 
 <!--<body> -->
@@ -212,7 +230,7 @@
 						<a href="admin/admin.php"><img src="<?php echo $config[ConfigNames::LogoUrl] . "?" . time(); ?>" height="150" alt=""></a>
 					<?php } ?>
 				</div>
-				<div class="HeaderCenter">
+				<div class="HeaderCenter" onClick="toggleFullScreen()">
 					<?php
 						if (strlen($config[ConfigNames::HeaderText]) > ($config[ConfigNames::HeaderTextTruncLen])) {
 							echo htmlentities(substr($config[ConfigNames::HeaderText],0,$config[ConfigNames::HeaderTextTruncLen]) . "...");
@@ -268,8 +286,10 @@
     					</td>
     				<?php $pour = count($poursList)>0?array_values($poursList)[0]:null;?>
     				<?php if(null !== $pour) {?>
+
     					<td class="poursbeername">
     						<h1 style="font-size: .5em"><?php echo $pour->get_beerName(); ?></h1>
+
     					</td>
                         <td class="poursamount">
                             <h1><?php echo $pour->get_amountPouredDisplay(); ?></h1>
