@@ -6,7 +6,6 @@ class Accolade
     private $_id;  
 	private $_name;
 	private $_type;
-	private $_rank;
 	private $_srm;  
 	private $_rgb; 
 	private $_notes;
@@ -23,9 +22,6 @@ class Accolade
 	
 	public function get_type(){ return $this->_type; }
 	public function set_type($_type){ $this->_type = $_type; }
-	
-	public function get_rank(){ return $this->_rank; }
-	public function set_rank($_rank){ $this->_rank = $_rank; }
 	
 	public function get_srm(){ return $this->_srm; }
 	public function set_srm($_srm){ $this->_srm = $_srm; }
@@ -54,11 +50,6 @@ class Accolade
 		else
 			$this->set_name(null);
 			
-		if( isset($postArr['rank']) )
-		    $this->set_rank($postArr['rank']);
-	    else
-	        $this->set_rank(null);
-	    
 		if( isset($postArr['type']) )
 			$this->set_type($postArr['type']);
 		else
