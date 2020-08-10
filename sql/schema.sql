@@ -775,6 +775,7 @@ CREATE TABLE IF NOT EXISTS `beerYeasts` (
 CREATE TABLE IF NOT EXISTS `accolades` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
 	`name` tinytext NOT NULL,
+	`rank` int(11) NULL,
 	`type` tinytext NULL,
 	`srm` decimal(3,1) NULL,
 	`notes` text NULL,
@@ -795,10 +796,10 @@ CREATE TABLE IF NOT EXISTS `beerAccolades` (
 	FOREIGN KEY (`accoladeId`) REFERENCES accolades(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB	DEFAULT CHARSET=latin1;
 
-INSERT INTO accolades VALUES('1','Gold','Medal','3.0','','2020-08-04 14:13:55','2020-08-04 14:14:34');
-INSERT INTO accolades VALUES('2','Silver','Medal','4.2','','2020-08-04 14:14:34','2020-08-04 14:14:34');
-INSERT INTO accolades VALUES('3','Bronze','Medal','9.6','','2020-08-04 14:14:34','2020-08-04 14:14:34');
-INSERT INTO accolades VALUES('4','BOS','Medal','9.6','','2020-08-04 14:14:34','2020-08-04 14:14:34');
+INSERT INTO accolades (id, name, rank, type, srm, notes, createdDate, modifiedDate) VALUES('1','Gold',1,'Medal','3.0','','2020-08-04 14:13:55','2020-08-04 14:14:34');
+INSERT INTO accolades (id, name, rank, type, srm, notes, createdDate, modifiedDate) VALUES('2','Silver',2,'Medal','4.2','','2020-08-04 14:14:34','2020-08-04 14:14:34');
+INSERT INTO accolades (id, name, rank, type, srm, notes, createdDate, modifiedDate) VALUES('3','Bronze',3,'Medal','9.6','','2020-08-04 14:14:34','2020-08-04 14:14:34');
+INSERT INTO accolades (id, name, rank, type, srm, notes, createdDate, modifiedDate) VALUES('4','BOS',4,'Medal','9.6','','2020-08-04 14:14:34','2020-08-04 14:14:34');
 
 CREATE TABLE IF NOT EXISTS `bottleTypes` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1503,7 +1504,7 @@ SELECT
 	tc.valveOn,
 	tc.valvePinState,
     tc.plaatoAuthToken,
-    GROUP_CONCAT(CONCAT(a.id,'~',a.name,'~',ba.amount)) as accolades
+    GROUP_CONCAT(CONCAT(a.id,'~',a.name,'~',ba.amount) ORDER BY a.rank) as accolades
 FROM taps t
 	LEFT JOIN tapconfig tc ON t.id = tc.tapId
 	LEFT JOIN kegs k ON k.id = t.kegId
@@ -1511,7 +1512,7 @@ FROM taps t
 	LEFT JOIN beerStyles bs ON bs.id = b.beerStyleId
 	LEFT JOIN breweries br ON br.id = b.breweryId
 	LEFT JOIN srmRgb s ON s.srm = b.srm
-	LEFT JOIN beeraccolades ba ON b.id = ba.beerId
+	LEFT JOIN beerAccolades ba ON b.id = ba.beerId
     LEFT JOIN accolades a on ba.accoladeId = a.id
 WHERE t.active = true
 GROUP BY t.id
@@ -1555,14 +1556,14 @@ SELECT
 	1 as valveOn,
 	1 as valvePinState,
     NULL,
-    GROUP_CONCAT(CONCAT(a.id,'~',a.name,'~',ba.amount)) as accolades
+    GROUP_CONCAT(CONCAT(a.id,'~',a.name,'~',ba.amount) ORDER BY a.rank) as accolades
 FROM bottles t
 	LEFT JOIN beers b ON b.id = t.beerId
 	LEFT JOIN bottleTypes bt ON bt.id = t.bottleTypeId
 	LEFT JOIN beerStyles bs ON bs.id = b.beerStyleId
 	LEFT JOIN breweries br ON br.id = b.breweryId
 	LEFT JOIN srmRgb s ON s.srm = b.srm
-	LEFT JOIN beeraccolades ba ON b.id = ba.beerId
+	LEFT JOIN beerAccolades ba ON b.id = ba.beerId
     LEFT JOIN accolades a on ba.accoladeId = a.id
 WHERE t.active = true
 GROUP BY t.id
