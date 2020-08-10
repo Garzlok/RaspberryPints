@@ -388,6 +388,7 @@ INSERT INTO `config` ( configName, configValue, displayName, showOnPanel, create
 ( 'showSrmValue', '1', 'Show SRM Value', '1', NOW(), NOW() ),
 ( 'showBuGuValue', '1', 'Show BU:GU Value', '1', NOW(), NOW() ),
 ( 'showIbuValue', '1', 'Show IBU Value', '1', NOW(), NOW() ),
+( 'showAccoladeCol', '0', 'Show Accolades Col', '1', NOW(), NOW() ),
 ( 'showBeerName', '1', 'Show Beer Name', '1', NOW(), NOW() ),
 ( 'showBeerRating', '1', 'Show Beer Rating', '1', NOW(), NOW() ),
 ( 'showBeerStyle', '1', 'Show Beer Style', '1', NOW(), NOW() ),
@@ -410,6 +411,7 @@ INSERT INTO `config` ( configName, configValue, displayName, showOnPanel, create
 ( 'headerTextTruncLen' ,'20', 'Header Text Truncate Length', '0', NOW(), NOW() ),
 ( 'useFlowMeter','0','Use Flow Monitoring', '1', NOW(),NOW() ),
 ( 'usePlaato', '0', 'Use Plaato Values', '1', NOW(), NOW() ),
+( 'usePlaatoTemp', '0', 'Use Plaato Temp', '1', NOW(), NOW() ),
 ( 'ClientID', '','Client ID', '0', NOW(), NOW() ),
 ( 'ClientSecret','','Client Secret','0',NOW(),NOW() ),
 ( 'BreweryID', '','Brewery ID','0',NOW(),NOW() ),
@@ -483,7 +485,11 @@ INSERT INTO `config` (`configName`, `configValue`, `displayName`, `showOnPanel`,
 ('IbuColNum', '3', 'Column number for IBU', 1, NOW(), NOW() ),
 ('BeerInfoColNum', '4', 'Column number for Beer Info', 1, NOW(), NOW() ),
 ('AbvColNum', '5', 'Column number for ABV', 1, NOW(), NOW() ),
-('KegColNum', '6', 'Column number for Keg', 1, NOW(), NOW() );
+('KegColNum', '6', 'Column number for Keg', 1, NOW(), NOW() ),
+('AccoladeColNum', '7', 'Column number for Accolades', 1, NOW(), NOW() );
+
+INSERT INTO `config` ( configName, configValue, displayName, showOnPanel, createdDate, modifiedDate ) VALUES
+( 'amountPerPint', '0', 'Amount per pint. > 0 then display pints remaining', '0', NOW(), NOW() );
 -- --------------------------------------------------------
 
 --
@@ -761,6 +767,39 @@ CREATE TABLE IF NOT EXISTS `beerYeasts` (
 --
 -- Table structure for table `bottleTypes`
 --
+
+--
+-- Table structure for table `Accolades`
+--
+
+CREATE TABLE IF NOT EXISTS `accolades` (
+	`id` int(11) NOT NULL AUTO_INCREMENT,
+	`name` tinytext NOT NULL,
+	`rank` int(11) NULL,
+	`type` tinytext NULL,
+	`srm` decimal(3,1) NULL,
+	`notes` text NULL,
+	`createdDate` TIMESTAMP NULL,
+	`modifiedDate` TIMESTAMP NULL,
+	
+	PRIMARY KEY (`id`)
+) ENGINE=InnoDB	DEFAULT CHARSET=latin1;
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `beerAccolades` (
+	`id` int(11) NOT NULL AUTO_INCREMENT,
+	`beerId` int(11) NOT NULL,
+    `accoladeId`int(11) NOT NULL,
+	`amount` tinytext NULL,
+	
+	PRIMARY KEY (`id`),
+	FOREIGN KEY (`beerId`) REFERENCES beers(`id`) ON DELETE CASCADE,
+	FOREIGN KEY (`accoladeId`) REFERENCES accolades(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB	DEFAULT CHARSET=latin1;
+
+INSERT INTO accolades (id, name, rank, type, srm, notes, createdDate, modifiedDate) VALUES('1','Gold',1,'Medal','3.0','','2020-08-04 14:13:55','2020-08-04 14:14:34');
+INSERT INTO accolades (id, name, rank, type, srm, notes, createdDate, modifiedDate) VALUES('2','Silver',2,'Medal','4.2','','2020-08-04 14:14:34','2020-08-04 14:14:34');
+INSERT INTO accolades (id, name, rank, type, srm, notes, createdDate, modifiedDate) VALUES('3','Bronze',3,'Medal','9.6','','2020-08-04 14:14:34','2020-08-04 14:14:34');
+INSERT INTO accolades (id, name, rank, type, srm, notes, createdDate, modifiedDate) VALUES('4','BOS',4,'Medal','9.6','','2020-08-04 14:14:34','2020-08-04 14:14:34');
 
 CREATE TABLE IF NOT EXISTS `bottleTypes` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1464,7 +1503,8 @@ SELECT
 	s.rgb as srmRgb,
 	tc.valveOn,
 	tc.valvePinState,
-    tc.plaatoAuthToken
+    tc.plaatoAuthToken,
+    GROUP_CONCAT(CONCAT(a.id,'~',a.name,'~',ba.amount) ORDER BY a.rank) as accolades
 FROM taps t
 	LEFT JOIN tapconfig tc ON t.id = tc.tapId
 	LEFT JOIN kegs k ON k.id = t.kegId
@@ -1472,7 +1512,10 @@ FROM taps t
 	LEFT JOIN beerStyles bs ON bs.id = b.beerStyleId
 	LEFT JOIN breweries br ON br.id = b.breweryId
 	LEFT JOIN srmRgb s ON s.srm = b.srm
+	LEFT JOIN beerAccolades ba ON b.id = ba.beerId
+    LEFT JOIN accolades a on ba.accoladeId = a.id
 WHERE t.active = true
+GROUP BY t.id
 ORDER BY t.id;
 
 -- --------------------------------------------------------
@@ -1512,14 +1555,18 @@ SELECT
 	s.rgb as srmRgb,
 	1 as valveOn,
 	1 as valvePinState,
-    NULL
+    NULL,
+    GROUP_CONCAT(CONCAT(a.id,'~',a.name,'~',ba.amount) ORDER BY a.rank) as accolades
 FROM bottles t
 	LEFT JOIN beers b ON b.id = t.beerId
 	LEFT JOIN bottleTypes bt ON bt.id = t.bottleTypeId
 	LEFT JOIN beerStyles bs ON bs.id = b.beerStyleId
 	LEFT JOIN breweries br ON br.id = b.breweryId
 	LEFT JOIN srmRgb s ON s.srm = b.srm
+	LEFT JOIN beerAccolades ba ON b.id = ba.beerId
+    LEFT JOIN accolades a on ba.accoladeId = a.id
 WHERE t.active = true
+GROUP BY t.id
 ORDER BY t.id;
 
 CREATE OR REPLACE VIEW `vwTaps` 
@@ -1674,6 +1721,15 @@ FROM tempLog tl
 LEFT JOIN tempProbes tp ON tl.probe = tp.name;
 -- --------------------------------------------------------
 
+
+CREATE OR REPLACE VIEW `vwAccolades` 
+AS
+ SELECT 
+    a.*,
+    srm.rgb
+ FROM accolades a LEFT JOIN srmRgb srm
+        ON a.srm = srm.srm;
+        
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

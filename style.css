@@ -145,8 +145,7 @@ img {
 	height: 50px;
 	text-align: center;
 	display:table-cell;
-	font-size: 1em;
-	font: 1em Georgia;
+	font: 3em Georgia bold;
 	color: white;
 	vertical-align: middle;
 	padding-top:25px;
@@ -194,6 +193,11 @@ img {
 
 .tap-num{
 	vertical-align: middle;
+}
+.accolades{
+	width: 250px;
+	text-align: center;
+	vertical-align: middle;	
 }
 
 .tapcircle {
@@ -497,4 +501,27 @@ table p{
 	font: .8em Georgia;
 	color: #A0A0A0;
 	margin-top:20px; 
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+.tooltip .tooltiptext {
+  visibility: hidden;
+  background-color: gray;
+  color: #000;
+  text-align: center;
+  border-radius: 6px;
+  text-shadow:0px 0px 0px #000;
+  font-size:12px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
 }

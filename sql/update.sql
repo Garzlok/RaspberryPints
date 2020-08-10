@@ -29,10 +29,10 @@ BEGIN
             SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
             WHERE
               (lower(table_name) = lower(tablename))
-              AND (lower(table_schema) = lower(dbname))
+              AND (table_schema = dbname)
               AND (lower(column_name) = lower(columnname))
           ) > 0,
-          "SELECT 1",
+          CONCAT("select '",dbname,"','",tableName,"','",columnName,"','",columnType,"','exists'"),
           CONCAT("ALTER TABLE ", tablename, " ADD ", columnname, " ", columnType)
         )
     );
@@ -601,10 +601,13 @@ INSERT IGNORE INTO `config` ( configName, configValue, displayName, showOnPanel,
 ( 'hozTapListCol', '0', 'Number Of horizontal tap List Beer Column', '1', '2|1', NOW(), NOW() );
 
 INSERT IGNORE INTO `config` ( configName, configValue, displayName, showOnPanel, createdDate, modifiedDate ) VALUES
-( 'usePlaato', '0', 'Use Plaato Values', '1', NOW(), NOW() );
+( 'usePlaato', '0', 'Use Plaato Values', '1', NOW(), NOW() ),
+( 'usePlaatoTemp', '0', 'Use Plaato Temp', '1', NOW(), NOW() );
 
 
 CALL addColumnIfNotExist(DATABASE(), 'tapconfig', 'plaatoAuthToken', 'tinytext NULL' );
+CALL addColumnIfNotExist(DATABASE(), 'tapconfig', 'loadCellScaleRatio', 'int(11) DEFAULT NULL' );
+CALL addColumnIfNotExist(DATABASE(), 'tapconfig', 'loadCellTareOffset', 'int(11) DEFAULT NULL' );
 
 CALL addColumnIfNotExist(DATABASE(), 'kegs', 'hasContinuousLid', 'int(11) DEFAULT 0' );
 
@@ -694,5 +697,146 @@ INSERT IGNORE INTO `config` ( configName, configValue, displayName, showOnPanel,
 ( 'showPouredValue', '1', 'Show Poured Value', '1', NOW(), NOW() );
 INSERT IGNORE INTO `config` ( configName, configValue, displayName, showOnPanel, createdDate, modifiedDate ) VALUES
 ( 'showLastPouredValue', '1', 'Show Last Poured Value', '1', NOW(), NOW() );
+
+INSERT IGNORE INTO `config` ( configName, configValue, displayName, showOnPanel, createdDate, modifiedDate ) VALUES
+( 'amountPerPint', '0', 'Amount per pint. > 0 then display pints remaining', '0', NOW(), NOW() );
+
+
+
+CREATE TABLE IF NOT EXISTS `accolades` (
+	`id` int(11) NOT NULL AUTO_INCREMENT,
+	`name` tinytext NOT NULL,
+	`type` tinytext NULL,
+	`srm` decimal(3,1) NULL,
+	`notes` text NULL,
+	`createdDate` TIMESTAMP NULL,
+	`modifiedDate` TIMESTAMP NULL,
+	
+	PRIMARY KEY (`id`)
+) ENGINE=InnoDB	DEFAULT CHARSET=latin1;
+CALL addColumnIfNotExist(DATABASE(), 'accolades', 'rank', 'int(11) DEFAULT NULL' );
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `beerAccolades` (
+	`id` int(11) NOT NULL AUTO_INCREMENT,
+	`beerId` int(11) NOT NULL,
+    `accoladeId`int(11) NOT NULL,
+	`amount` tinytext NULL,
+	
+	PRIMARY KEY (`id`),
+	FOREIGN KEY (`beerId`) REFERENCES beers(`id`) ON DELETE CASCADE,
+	FOREIGN KEY (`accoladeId`) REFERENCES accolades(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB	DEFAULT CHARSET=latin1;
+
+CREATE OR REPLACE VIEW `vwAccolades` 
+AS
+ SELECT 
+    a.*,
+    srm.rgb
+ FROM accolades a LEFT JOIN srmRgb srm
+        ON a.srm = srm.srm;
+INSERT IGNORE INTO accolades VALUES('1','Gold','Medal','3.0','','2020-08-04 14:13:55','2020-08-04 14:14:34');
+INSERT IGNORE INTO accolades VALUES('2','Silver','Medal','4.2','','2020-08-04 14:14:34','2020-08-04 14:14:34');
+INSERT IGNORE INTO accolades VALUES('3','Bronze','Medal','9.6','','2020-08-04 14:14:34','2020-08-04 14:14:34');
+INSERT IGNORE INTO accolades VALUES('4','BOS','Medal','9.6','','2020-08-04 14:14:34','2020-08-04 14:14:34');
+UPDATE accolades SET rank = id WHERE rank IS NULL;
+
+INSERT IGNORE INTO `config` ( configName, configValue, displayName, showOnPanel, createdDate, modifiedDate ) VALUES
+( 'showAccoladeCol', '0', 'Show Accolades Col', '1', NOW(), NOW() ),
+('AccoladeColNum', '7', 'Column number for Accolades', 0, NOW(), NOW() );
+
+CREATE OR REPLACE VIEW vwGetActiveTaps
+AS
+
+SELECT
+	t.id,
+	b.id as 'beerId',
+	b.name,
+	b.untID,
+	bs.name as 'style',
+	br.name as 'breweryName',
+	br.imageUrl as 'breweryImageUrl',
+	b.rating,
+	b.notes,
+	b.abv,
+	b.og as og,
+	b.ogUnit as ogUnit,
+	b.fg as fg,
+	b.fgUnit as fgUnit,
+	b.srm as srm,
+	b.ibu as ibu,
+	IFNULL(k.startAmount, 0)        as startAmount,
+	IFNULL(k.startAmountUnit, '')   as startAmountUnit,
+    CASE WHEN k.hasContinuousLid = 0 THEN IFNULL(k.currentAmount, 0) ELSE IFNULL(k.startAmount, 0)  END      as remainAmount,
+    IFNULL(k.currentAmountUnit, '') as remainAmountUnit,
+	t.tapNumber,
+	t.tapRgba,
+    tc.flowPin as pinId,
+	s.rgb as srmRgb,
+	tc.valveOn,
+	tc.valvePinState,
+    tc.plaatoAuthToken,
+    GROUP_CONCAT(CONCAT(a.id,'~',a.name,'~',ba.amount) ORDER BY a.rank) as accolades
+FROM taps t
+	LEFT JOIN tapconfig tc ON t.id = tc.tapId
+	LEFT JOIN kegs k ON k.id = t.kegId
+	LEFT JOIN beers b ON b.id = k.beerId
+	LEFT JOIN beerStyles bs ON bs.id = b.beerStyleId
+	LEFT JOIN breweries br ON br.id = b.breweryId
+	LEFT JOIN srmRgb s ON s.srm = b.srm
+	LEFT JOIN beerAccolades ba ON b.id = ba.beerId
+    LEFT JOIN accolades a on ba.accoladeId = a.id
+WHERE t.active = true
+GROUP BY t.id
+ORDER BY t.id;
+        
+CREATE OR REPLACE VIEW vwGetFilledBottles
+AS
+
+SELECT
+	t.id,
+	b.id as 'beerId',
+	b.name,
+	b.untID,
+	bs.name as 'style',
+	br.name as 'breweryName',
+	br.imageUrl as 'breweryImageUrl',
+	b.rating,
+	b.notes,
+	b.abv,
+	b.og as og,
+	b.ogUnit as ogUnit,
+	b.fg as fg,
+	b.fgUnit as fgUnit,
+	b.srm as srm,
+	b.ibu as ibu,
+	bt.volume,
+	bt.volumeUnit,
+	t.startAmount,
+	IFNULL(null, 0) as amountPoured,
+	t.currentAmount as remainAmount,
+	t.capNumber,
+	t.capRgba,
+    NULL as pinId,
+	s.rgb as srmRgb,
+	1 as valveOn,
+	1 as valvePinState,
+    NULL,
+    GROUP_CONCAT(CONCAT(a.id,'~',a.name,'~',ba.amount) ORDER BY a.rank) as accolades
+FROM bottles t
+	LEFT JOIN beers b ON b.id = t.beerId
+	LEFT JOIN bottleTypes bt ON bt.id = t.bottleTypeId
+	LEFT JOIN beerStyles bs ON bs.id = b.beerStyleId
+	LEFT JOIN breweries br ON br.id = b.breweryId
+	LEFT JOIN srmRgb s ON s.srm = b.srm
+	LEFT JOIN beerAccolades ba ON b.id = ba.beerId
+    LEFT JOIN accolades a on ba.accoladeId = a.id
+WHERE t.active = true
+GROUP BY t.id
+ORDER BY t.id;
+
+INSERT IGNORE INTO `config` ( configName, configValue, displayName, showOnPanel, createdDate, modifiedDate ) VALUES
+( 'updateDate', '', '', '1', NOW(), NOW() );
+UPDATE `config` SET `configValue` = NOW() WHERE `configName` = 'updateDate';
+
 
 UPDATE `config` SET `configValue` = '3.0.9.0' WHERE `configName` = 'version';

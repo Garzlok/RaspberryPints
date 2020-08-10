@@ -38,6 +38,7 @@
 			<li><a href="hops_list.php">Hops</a></li>
 			<li><a href="fermentables_list.php">Fermentables</a></li>
 			<li><a href="yeasts_list.php">Yeasts</a></li>
+			<li><a href="accolades_list.php">Accolades</a></li>
 		</ul>
 	</li>
     <li>
@@ -50,6 +51,7 @@
 			<li><a href="personalize.php#weightCalculation">Brewery Defaults</a></li>
 			<li><a href="themes.php">Theme Options</a></li>
 			<li><a href="units_of_measure.php" title="personalize">Units of Measure</a></li>
+			<li><a href="customize_tap_display.php" title="personalize">Customize Tap Display</a></li>
 		</ul>
 	</li>
 	<li>

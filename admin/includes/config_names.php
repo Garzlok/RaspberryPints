@@ -74,6 +74,8 @@ abstract class ConfigNames
 	const ShowTapNumCol = 'showTapNumCol';
 	const TapNumColNum = 'TapNumColNum';
 	const ShowTastingNotes = 'showTastingNotes';
+	const ShowAccoladeCol = 'showAccoladeCol';
+	const AccoladeColNum = 'AccoladeColNum';
 	const UseFanControl = 'useFanControl';
 	const UseFanPin = 'useFanPin';
 	const UseFlowMeter = 'useFlowMeter';
@@ -81,6 +83,7 @@ abstract class ConfigNames
 	const UseRFID = 'useRFID';
 	const UseTapValves = 'useTapValves';
 	const UsePlaato = 'usePlaato';
+	const UsePlaatoTemp = 'usePlaatoTemp';
 	const ValvesPowerPin = 'valvesPowerPin';
 	const Use3WireValves = 'use3WireValves';
 	const ValvesOnTime = 'valvesOnTime';
@@ -112,5 +115,6 @@ abstract class ConfigNames
 	const DisplayUnitWeight      = 'displayUnitWeight';
 	const ShowBeerTableHead      = 'showBeerTableHead';
 	const HozTapListCol      = 'hozTapListCol';
+	const AmountPerPint      = 'amountPerPint';
 }
 ?>
