@@ -152,9 +152,7 @@ log() {
 # usage outputs to stdout the --help usage message.
 usage() {
 cat << EOF
-
 $PACKAGE $THISSCRIPT version $VERSION
-
 Usage: sudo ./$THISSCRIPT"
 EOF
 }
@@ -162,17 +160,13 @@ EOF
 # version outputs to stdout the --version message.
 version() {
 cat << EOF
-
 $THISSCRIPT ($PACKAGE) $VERSION
-
 Copyright (C) 2019 Lee C. Bussy (@LBussy)
-
 This is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published
 by the Free Software Foundation, either version 3 of the License,
 or (at your option) any later version.
 <https://www.gnu.org/licenses/>
-
 There is NO WARRANTY, to the extent permitted by law.
 EOF
 }
@@ -336,24 +330,20 @@ detectRPintsInstall(){
 instructions() {
     clear
     cat << EOF
-
 =============================================================================
      -----=====>>>>>     Raspberry Pints Tools     <<<<<=====-----
 =============================================================================
-
 You will be presented with some choices during the install. Most frequently
 you will see a 'yes or no' choice, with the default choice capitalized like
 so: [y/N]. Default means if you hit <enter> without typing anything, you will
 make the capitalized choice, i.e. hitting <enter> when you see [Y/n] will
 default to 'yes.'
-
 Yes/no choices are not case sensitive. However; passwords, system names and
 install paths are. Be aware of this. There is generally no difference between
 'y', 'yes', 'YES', 'Yes'; you get the idea. In some areas you are asked for a
 path; the default/recommended choice is in braces like: [/var/www/html].
 Pressing <enter> without typing anything will take the default/recommended
 choice.
-
 EOF
     read -n 1 -s -r -p  "Press any key when you are ready to proceed. " < /dev/tty
     echo -e ""
@@ -1463,25 +1453,18 @@ complete() {
 	esac
     clear
     cat << EOF
-
 =============================================================================
    -----=====>>>>>     Raspberry Pints Tools Complete     <<<<<=====-----
 =============================================================================
-
 Raspberry Pints has now been installed to $WWWPATH.
-
 There's also a very good chance that a large number
 of packages have been updated.  In order to allow thse changes to be
 effective, please reboot your Pi to ensure a clean start.
-
 It may take several minutes for this reboot.  Be patient.
-
 To continue your Raspberry Pints setup, please use your web browser and
 navigate to:
-
     By IP             : $IPURL
     -or- by host name : $HOSTURL
-
 EOF
 
 	if promptYN "Restarted needed to use alamode. Restart Now?" "Y"; then
