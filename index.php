@@ -80,7 +80,7 @@
     			            if($config[ConfigNames::UsePlaatoTemp])
     			            {
     			                $tempInfo["tempUnit"] = (strpos($plaatoValue,"C")?UnitsOfMeasure::TemperatureCelsius:UnitsOfMeasure::TemperatureFahrenheight);
-    			                $tempInfo["temp"] = substr($plaatoValue, 0, strpos($plaatoValue, '�'));
+    			                $tempInfo["temp"] = substr($plaatoValue, 0, strpos($plaatoValue, '°'));
     			                $tempInfo["probe"] = $b['id'];
     			                $tempInfo["takenDate"] = date('Y-m-d H:i:s');
     			                array_push($plaatoTemps, $tempInfo);
