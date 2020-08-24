@@ -556,3 +556,6 @@ table p{
 .tooltip:hover .tooltiptext {	
   visibility: visible;	
 } 
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
