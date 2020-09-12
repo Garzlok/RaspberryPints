@@ -299,10 +299,6 @@ img {
 }	
 .abv-indicator{
 	display: inline-block;
-	position: relative;
-	height:100%;
-	width:45%;
-	background: url(img/abv/stroke.png) no-repeat bottom left;
 }
 .abv-indicator .abv-full{
 	position: absolute;
@@ -351,7 +347,7 @@ img {
 	left: 0;
 	height: 100%;
 	width: 100%;
-	background: url(img/keg/stroke.png) no-repeat bottom left;	
+	background: url(img/keg/kegSvg.php?container=keg&empty) no-repeat bottom left;	
 }
 .keg-indicator .keg-full{
 	position: absolute;
@@ -388,14 +384,14 @@ img {
 	left: 0;
 	height: 100%;
 	width: 100%;
-	background: url(img/bottle/stroke.png) no-repeat bottom left;	
+	background: url(img/bottle/bottleSvg.php?container=bottle&empty) no-repeat bottom left;	
 }
 .bottle-indicator .bottle-full{
 	position: absolute;
 	bottom: 0;
 	left: 0;
 	width: 100%;
-	background: url(img/bottle/green.png) no-repeat bottom left;
+	background: url(img/bottle/bottleSvg.php?container=bottle&rgb=0,255,0) no-repeat bottom left;
 }
 .bottle-indicator .bottle-empty{
 	background-image: url(img/bottle/stroke.png);
