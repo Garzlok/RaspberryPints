@@ -12,7 +12,7 @@ html, body {
 	background-repeat:no-repeat;
 	overflow: visible;
 	color: #FFFFFF;
-	font: 1em Georgia, arial, verdana, sans-serif;
+	font: 1em Roboto, arial, verdana, sans-serif;
 	margin:0px;
 	height:100%;
 }
