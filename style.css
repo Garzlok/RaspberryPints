@@ -489,6 +489,7 @@ table h3 {
 	-webkit-margin-before: 5px;
 	-webkit-margin-after: 5px;
 	text-align: center;
+	fint-weight: normal;
 }
 table h2 {
 	font: 1em Roboto;
