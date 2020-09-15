@@ -1,5 +1,5 @@
 html, body {height: 100%;}
-body {height: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 13px; margin: 0; padding: 0; background:#eaeaea url(../img/bg_body_left.png) repeat-y left; color: #666;}
+body {height: 100%; font-family: Roboto, Helvetica, sans-serif; font-size: 13px; margin: 0; padding: 0; background:#eaeaea url(../img/bg_body_left.png) repeat-y left; color: #666;}
 	p {padding: 0; margin: 0;}
 	ul, li {list-style: none; padding: 0; margin: 0;}
 	img {border: none;}
