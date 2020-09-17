@@ -153,7 +153,7 @@ if($editting) $maxTapCol = 1;
 				<?php if(($editting || $config[ConfigNames::ShowSrmCol]) &&
 				         beerListShouldDisplayRow($editting, $col, $config[ConfigNames::SrmColNum])){ ?>
 					<td class="srm">
-					<?php if(isset($beer) && $beer['beername'] && $beer['srm'] > 0){ ?>						
+					<?php if(isset($beer) && $beer['beername'] && $beer['srm'] >= 0){ ?>						
 						<div class="srm-container">
 							<?php if($config[ConfigNames::ShowSrmImg]){?>
 								<?php echo '<img src="'.($editting?'../':'').'img/srm/'.($beer['srm']>40?40:floor($beer['srm'])).'-srm.png" />'?>
@@ -268,7 +268,7 @@ if($editting) $maxTapCol = 1;
 							<?php
 							if($abv){
 							?>
-								<div class="abv-indicator" style="  background: url(img/abv/agvSvg.php?container=abv&empty) no-repeat bottom left;"><div class="abv-full" style="height:100%;  background: url(img/abv/abvSvg.php?container=abv&fill=<?php echo $abv * 20; ?>&rgb=255,165,0) no-repeat bottom left;"></div></div>
+								<div class="abv-indicator" style="  background: url(img/abv/abvSvg.php?container=abv&empty) no-repeat bottom left;"><div class="abv-full" style="height:100%;  background: url(img/abv/abvSvg.php?container=abv&fill=<?php echo $abv * 20; ?>&rgb=255,165,0) no-repeat bottom left;"></div></div>
 							<?php
 							}else{
 							?>

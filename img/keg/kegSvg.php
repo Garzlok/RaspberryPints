@@ -3,15 +3,6 @@
 
 <?php
 
-/* this just feels wrong */
-$rgb = explode(',',$_GET['rgb']);
-$r = $rgb[0];
-$g = $rgb[1];
-$b = $rgb[2];
-if ($r<60) { $foamRgb = "159,129,112"; }
-elseif ($r<190) { $foamRgb = "255,250,205"; }
-else { $foamRgb = "255,255,255"; }
-
 $fn = preg_replace('/\W+/','',$_GET['container']);
 $view="10 00 200 300";
 ?>
@@ -28,7 +19,7 @@ $view="10 00 200 300";
   <linearGradient id="rgbToTransVerticle" x2="0" y2="1">
     <stop offset="0%" stop-color="rgba(<?php echo "0,0,0,0" ?>)" />
     <stop offset="<?php echo isset($_GET['fill'])?strval(100-intval($_GET['fill'])):"0"; ?>%" stop-color="rgba(<?php echo "0,0,0,0" ?>)" />
-    <stop offset="<?php echo isset($_GET['fill'])?strval(100-intval($_GET['fill'])):"0"; ?>%" stop-color="rgb(<?php echo $_GET['rgb'] ?>)" />
+    <stop offset="<?php echo isset($_GET['fill'])?strval(100-intval($_GET['fill'])):"0"; ?>%" stop-color="rgb(<?php echo isset($_GET['rgb'])?$_GET['rgb']:"0,0,0" ?>)" />
   </linearGradient>
 <style type="text/css"><![CDATA[
   #outline {
