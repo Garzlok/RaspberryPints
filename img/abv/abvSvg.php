@@ -2,16 +2,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 
 <?php
-
+$foamRgb="";
+$rgbBackground="";
 /* this just feels wrong */
-$rgb = explode(',',$_GET['rgb']);
-$r = $rgb[0];
-$g = $rgb[1];
-$b = $rgb[2];
-if ($r<60) { $foamRgb = "159,129,112"; }
-elseif ($r<190) { $foamRgb = "255,250,205"; }
-else { $foamRgb = "255,255,255"; }
-
+if(isset($_GET['rgb']))
+{
+    $rgbBackground = $_GET['rgb'];
+    $rgb = explode(',',$_GET['rgb']);
+    $r = $rgb[0];
+    $g = $rgb[1];
+    $b = $rgb[2];
+    if ($r<60) { $foamRgb = "159,129,112"; }
+    elseif ($r<190) { $foamRgb = "255,250,205"; }
+    else { $foamRgb = "255,255,255"; }
+}
 $fn = preg_replace('/\W+/','',$_GET['container']);
 $view="0 0 350 300";
 
@@ -30,17 +34,17 @@ $numCups= isset($_GET['fill'])?intval($_GET['fill'])/100:1;
   <linearGradient id="rgbToTransVerticle" x2="0" y2="1">
     <stop offset="0%" stop-color="rgba(<?php echo "0,0,0,0" ?>)" />
     <stop offset="<?php echo $numCups>=1?0:($numCups-floor($numCups))*100; ?>%" stop-color="rgba(<?php echo "0,0,0,0" ?>)" />
-    <stop offset="<?php echo $numCups>=1?0:($numCups-floor($numCups))*100; ?>%" stop-color="rgb(<?php echo $_GET['rgb'] ?>)" />
+    <stop offset="<?php echo $numCups>=1?0:($numCups-floor($numCups))*100; ?>%" stop-color="rgb(<?php echo $rgbBackground ?>)" />
   </linearGradient>
   <linearGradient id="rgbToTransVerticle2" x2="0" y2="1">
     <stop offset="0%" stop-color="rgba(<?php echo "0,0,0,0" ?>)" />
     <stop offset="<?php echo $numCups>=2?0:($numCups-floor($numCups))*100; ?>%" stop-color="rgba(<?php echo "0,0,0,0" ?>)" />
-    <stop offset="<?php echo $numCups>=2?0:($numCups-floor($numCups))*100; ?>%" stop-color="rgb(<?php echo $_GET['rgb'] ?>)" />
+    <stop offset="<?php echo $numCups>=2?0:($numCups-floor($numCups))*100; ?>%" stop-color="rgb(<?php echo $rgbBackground ?>)" />
   </linearGradient>
   <linearGradient id="rgbToTransVerticle3" x2="0" y2="1">
     <stop offset="0%" stop-color="rgba(<?php echo "0,0,0,0" ?>)" />
     <stop offset="80%" stop-color="rgba(<?php echo "0,0,0,0" ?>)" />
-    <stop offset="80%" stop-color="rgb(<?php echo $_GET['rgb'] ?>)" />
+    <stop offset="80%" stop-color="rgb(<?php echo $rgbBackground ?>)" />
   </linearGradient>
 <style type="text/css"><![CDATA[
 <?php if($numCups >= 0){ ?>
