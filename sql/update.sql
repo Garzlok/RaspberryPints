@@ -379,30 +379,7 @@ ALTER TABLE tempLog CHANGE COLUMN `humidity` `humidity` decimal(6,2) NULL ;
 CALL addColumnIfNotExist(DATABASE(), 'config', 'validation', 'varchar(65)' );
 
 
-INSERT IGNORE INTO `config` (`configName`, `configValue`, `displayName`, `showOnPanel`, `validation`, `createdDate`, `modifiedDate`) VALUES
-( 'displayUnitVolume', 'oz', 'Volume Units', '0', 'Imperial;oz|Metric;ml', NOW(), NOW() ),
-( 'displayUnitPressure', 'psi', 'Pressure Units', '0', 'psi|Pa', NOW(), NOW() ),
-( 'displayUnitDistance', 'ft', 'Distance Units', '0', 'ft|m', NOW(), NOW() ),
-( 'displayUnitGravity', 'sg', 'Gravity Units', '0', 'sg|b|p', NOW(), NOW() ),
-( 'displayUnitTemperature', 'F', 'Temperature Units', '0', 'F|C', NOW(), NOW() ),
-( 'displayUnitWeight', 'lb', 'Weight Units', '0', 'lb|kg', NOW(), NOW() ),
-( 'defaultFermPSIUnit', 'psi', 'Default pressure of fermentation Unit', '0', NULL, NOW(), NOW() ),
-( 'defaultKeggingTempUnit', 'F', 'Default Temperature Unit of beer when kegging', '0', NULL, NOW(), NOW() );
-
-
-CALL addColumnIfNotExist(DATABASE(), 'beers', 'ogUnit', 'tinytext' );
-CALL addColumnIfNotExist(DATABASE(), 'beers', 'fgUnit', 'tinytext' );
-CALL addColumnIfNotExist(DATABASE(), 'kegs', 'weightUnit', 'tinytext' );
-CALL addColumnIfNotExist(DATABASE(), 'kegs', 'emptyWeightUnit', 'tinytext' );
-CALL addColumnIfNotExist(DATABASE(), 'kegs', 'maxVolumeUnit', 'tinytext' );
-CALL addColumnIfNotExist(DATABASE(), 'kegs', 'startAmountUnit', 'tinytext' );
-CALL addColumnIfNotExist(DATABASE(), 'kegs', 'currentAmountUnit', 'tinytext' );
-CALL addColumnIfNotExist(DATABASE(), 'kegs', 'fermentationPSIUnit', 'tinytext' );
-CALL addColumnIfNotExist(DATABASE(), 'kegs', 'keggingTempUnit', 'tinytext' );
-CALL addColumnIfNotExist(DATABASE(), 'kegTypes', 'maxAmountUnit', 'tinytext' );
-CALL addColumnIfNotExist(DATABASE(), 'kegTypes', 'emptyWeightUnit', 'tinytext' );
-CALL addColumnIfNotExist(DATABASE(), 'pours', 'amountPouredUnit', 'tinytext' );
-
+DELETE FROM config where configName like 'displayUnit%';
 
 INSERT IGNORE INTO `config` (`configName`, `configValue`, `displayName`, `showOnPanel`, `validation`, `createdDate`, `modifiedDate`) VALUES
 ( 'displayUnitVolume', 'oz', 'Volume Units', '0', 'Imperial;oz|Metric;ml', NOW(), NOW() ),
@@ -800,19 +777,6 @@ INSERT IGNORE INTO `containerTypes` ( id,displayName, volume, total, used, creat
 
 
 CALL addColumnIfNotExist(DATABASE(), 'beers', 'containerId', 'int(11) NULL DEFAULT 1' );
-CALL addColumnIfNotExist(DATABASE(), 'beerStyles', 'active', 'tinyint(1) NOT NULL DEFAULT 1' );
-CALL addColumnIfNotExist(DATABASE(), 'beerStyles', 'ogMinUnit', 'tinytext' );
-CALL addColumnIfNotExist(DATABASE(), 'beerStyles', 'ogMaxUnit', 'tinytext' );
-CALL addColumnIfNotExist(DATABASE(), 'beerStyles', 'fgMinUnit', 'tinytext' );
-CALL addColumnIfNotExist(DATABASE(), 'beerStyles', 'fgMaxUnit', 'tinytext' );
-
-UPDATE beerStyles SET ogMinUnit='sg' WHERE ogMinUnit IS NULL;
-UPDATE beerStyles SET ogMaxUnit='sg' WHERE ogMaxUnit IS NULL;
-UPDATE beerStyles SET fgMinUnit='sg' WHERE fgMinUnit IS NULL;
-UPDATE beerStyles SET fgMaxUnit='sg' WHERE fgMaxUnit IS NULL;
-
-ALTER TABLE beerStyles MODIFY srmMin decimal(7,1) NOT NULL ;
-ALTER TABLE beerStyles MODIFY srmMax decimal(7,1) NOT NULL ;
 
 CREATE OR REPLACE VIEW vwGetActiveTaps
 AS
