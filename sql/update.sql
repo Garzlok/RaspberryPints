@@ -821,7 +821,7 @@ SELECT
 	tc.valvePinState,
     tc.plaatoAuthToken,
     ct.displayName as containerType,
-    k.make as kegType,
+    CASE WHEN lower(k.make) LIKE 'corn%' THEN 'corny' WHEN lower(k.make) LIKE '%firestone%' THEN 'Corny' ELSE 'keg' END as kegType,
     GROUP_CONCAT(CONCAT(a.id,'~',a.name,'~',ba.amount) ORDER BY a.rank) as accolades
 FROM taps t
 	LEFT JOIN tapconfig tc ON t.id = tc.tapId
@@ -869,7 +869,7 @@ SELECT
 	1 as valveOn,
 	1 as valvePinState,
     NULL,
-    NULL as containerType,
+    'bottle' as containerType,
     NULL as kegType,
     GROUP_CONCAT(CONCAT(a.id,'~',a.name,'~',ba.amount) ORDER BY a.rank) as accolades
 FROM bottles t
@@ -885,6 +885,8 @@ GROUP BY t.id
 ORDER BY t.id;
 
 
+INSERT IGNORE INTO `config` ( configName, configValue, displayName, showOnPanel, createdDate, modifiedDate ) VALUES
+( 'ABVColorSRM', '1', 'Use beers SRM color to fill in the ABV indicator', '1', NOW(), NOW() );
 
 INSERT IGNORE INTO `config` ( configName, configValue, displayName, showOnPanel, createdDate, modifiedDate ) VALUES
 ( 'updateDate', '', '', '0', NOW(), NOW() );
