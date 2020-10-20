@@ -257,9 +257,9 @@
 					<?php if(($config[ConfigNames::ShowAbvImg])) { ?>
 						<div class="abv-container">
 							<?php
-							if($abv){
+							if(NULL !== $abv && $abv>=0){
 							?>
-								<div class="abv-indicator" style="  background: url(img/abv/abvSvg.php?container=abv&empty) no-repeat bottom left;"><div class="abv-full" style="height:100%;  background: url(img/abv/abvSvg.php?container=abv&fill=<?php echo $abv * 20; ?>&rgb=255,165,0) no-repeat bottom left;"></div></div>
+								<div class="abv-indicator" style="  background: url(img/abv/abvSvg.php?container=<?php echo $beer['containerType']; ?>&empty) no-repeat bottom left;"><div class="abv-full" style="height:100%;  background: url(img/abv/abvSvg.php?container=<?php echo $beer['containerType']; ?>&fill=<?php echo $abv * 20; ?>&rgb=<?php echo $config[ConfigNames::ABVColorSRM]?$beer['srmRgb']:"255,165,0"?>) no-repeat bottom left;"></div></div>
 							<?php
 							}else{
 							?>
@@ -271,7 +271,7 @@
 					<?php }
     					if((!$config[ConfigNames::ShowAbvImg] ||
     					     $config[ConfigNames::ShowAbvTxtWImg] )){ ?>
-						<h2><?php echo number_format($abv, 1, '.', ',')."%"; ?> ABV</h2>
+    						<?php if(NULL !== $abv && $abv>=0){?><h2><?php echo number_format($abv, 1, '.', ',')."%"; ?> ABV</h2><?php }?>
 					<?php } ?>
 					<?php if($config[ConfigNames::ShowCalories]){ ?>
 					<h3><?php
@@ -366,12 +366,8 @@
 					?>
 					<div class="keg-container">
 						<?php if($tapOrBottle == ConfigNames::CONTAINER_TYPE_KEG){ ?>
-						    <?php 
-							    $kegType="keg";
-							    if(strtolower(substr($beer['kegType'], 0, 4)) == "corn") $kegType = "corny";
-						    ?>
-							<div class="keg-indicator" style="background: url(img/keg/kegSvg.php?container=<?php echo $kegType?>&empty) no-repeat bottom left;">
-								<div class="keg-full" style="height:100%; width: 100%; background: url(img/keg/kegSvg.php?container=<?php echo $kegType?>&fill=<?php echo $percentRemaining; ?>&rgb=<?php echo $kegImgColor ?>) no-repeat bottom left;" >
+							<div class="keg-indicator" style="background: url(img/keg/kegSvg.php?container=<?php echo $beer['kegType']?>&empty) no-repeat bottom left;">
+								<div class="keg-full" style="height:100%; width: 100%; background: url(img/keg/kegSvg.php?container=<?php echo $beer['kegType']?>&fill=<?php echo $percentRemaining; ?>&rgb=<?php echo $kegImgColor ?>) no-repeat bottom left;" >
 								       <div class="<?php echo $kegOn ?>"></div>
 								       <?php if($percentRemaining>=100){?><div style="height:100%;"><h1 style="height:100%;text-align: center;padding-top: 50%; color:white;  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">FULL</h1></div><?php }?>
 									   <?php if($percentRemaining<=0){?><div style="height:100%;"><h1 style="height:100%;text-align: center;padding-top: 50%; color:White;  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">MT</h1></div><?php }?>
