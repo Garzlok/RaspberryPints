@@ -287,7 +287,7 @@
 				<table>
     				<tr>
     					<td class="poursbeername">
-    						<h1 style="text-align: right">Last Pour</h1>
+    						<h3 style="text-align: center">Last Pour</h3>
     					</td>
 					<?php 
 					if(!$config[ConfigNames::ShowPourListOnHome]){
@@ -307,7 +307,7 @@
 
     					</td>
                         <td class="poursamount">
-                            <h1><?php echo $pour->get_amountPouredDisplay(); ?></h1>
+                            <h2><?php echo $pour->get_amountPouredDisplay(); ?></h2>
                         </td>
     				<?php } ?>
                     </tr>
