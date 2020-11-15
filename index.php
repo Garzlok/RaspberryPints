@@ -80,7 +80,7 @@
     			            if($config[ConfigNames::UsePlaatoTemp])
     			            {
     			                $tempInfo["tempUnit"] = (strpos($plaatoValue,"C")?UnitsOfMeasure::TemperatureCelsius:UnitsOfMeasure::TemperatureFahrenheight);
-    			                $tempInfo["temp"] = substr($plaatoValue, 0, strpos($plaatoValue, '°'));
+    			                $tempInfo["temp"] = substr($plaatoValue, 0, strpos($plaatoValue, 'Â°'));
     			                $tempInfo["probe"] = $b['id'];
     			                $tempInfo["takenDate"] = date('Y-m-d H:i:s');
     			                array_push($plaatoTemps, $tempInfo);
@@ -259,15 +259,15 @@
 				<table>
     				<tr>
     					<td class="poursbeername">	
-    						<h1 style="text-align: right">Last Pour</h1>
+    						<h3 style="text-align: center">Last Pour</h3>
     					</td>
     				<?php $pour = count($poursList)>0?array_values($poursList)[0]:null;?>
     				<?php if(null !== $pour) {?>
     					<td class="poursbeername">	
-    						<h1 style="font-size: 1em"><?php echo $pour->get_beerName(); ?></h1>
+    						<h1 style="font-size: .5em"><?php echo $pour->get_beerName(); ?></h1>
     					</td>
                         <td class="poursamount">
-                            <h1><?php echo $pour->get_amountPouredDisplay(); ?></h1>
+                            <h2><?php echo $pour->get_amountPouredDisplay(); ?></h2>
                         </td>
     				<?php } ?>
                     </tr>
