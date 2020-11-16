@@ -303,11 +303,11 @@
     				<?php if(null !== $pour) {?>
 
     					<td class="poursbeername">
-    						<h1 style="font-size: .5em"><?php echo $pour->get_beerName(); ?></h1>
+    						<h1 style="font-size: 1em"><?php echo $pour->get_beerName(); ?></h1>
 
     					</td>
                         <td class="poursamount">
-                            <h2><?php echo $pour->get_amountPouredDisplay(); ?></h2>
+                            <h2><?php echo $pour->get_amountPouredDisplay(); ?>oz</h2>
                         </td>
     				<?php } ?>
                     </tr>
