@@ -149,13 +149,13 @@ img {
 }
 /* Header Styles */
 .header {
-	width: 99%;
+	width: 100%;
 	height: 100px;
 	margin-bottom: 2px;
 	display:table;
 }
 .HeaderLeft {
-	width: 20%;
+	width: min-content;
 	height: 100px;
 	display:table-cell;
 	font: .85em Roboto;
@@ -164,16 +164,16 @@ img {
 	text-align: left;
 }
 .HeaderCenter {
-	width: 60%;
+	width: 50%;
 	height: 50px;
 	text-align: center;
 	display:table-cell;
-	font: 3.25em You Rook Marbelous;
+	font: 2em You Rook Marbelous;
 	text-shadow: 2px 2px white;
 	color: #FE6600;
 	font-weight: normal;
 	vertical-align: middle;
-	padding-top:10px;
+	padding-top: 0px;
 }
 .HeaderRight {
 	width: 10%;
@@ -450,11 +450,19 @@ align: right;
 }
 
 .beerfeed {
-color: #ccc;
-font-size: 12px;
+/*Untappd Quasi Styling*/
+height: Auto;
+width: 99%;
+background-color: rgba(245,242,232,.3);
+border: 2px #FFCC00 solid;
+border-radius: 1em;
+color: #F5F2E8;
+font: .3em Helvetica;
+text-shadow: 0px 0px white;
+display:flex;
+justify-content: center;
 
 }
-
 
 table{
 	width: 100%;
