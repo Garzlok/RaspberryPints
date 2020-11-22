@@ -237,11 +237,15 @@
 				</div>
 				<div class="HeaderCenter" onClick="toggleFullScreen()">
 					<?php
-						if (strlen($config[ConfigNames::HeaderText]) > ($config[ConfigNames::HeaderTextTruncLen])) {
+					if (strlen($config[ConfigNames::HeaderText]) > ($config[ConfigNames::HeaderTextTruncLen])) {
 							echo htmlentities(substr($config[ConfigNames::HeaderText],0,$config[ConfigNames::HeaderTextTruncLen]) . "...");
 						} else {
 							echo htmlentities($config[ConfigNames::HeaderText]);
 						}
+					if( true ){
+					require_once __DIR__.'/includes/functions.php';
+					utBreweryFeed($config, $config[ConfigNames::BreweryID]);
+					}
 					?>
 				</div>
           		<?php
@@ -268,7 +272,7 @@
               		        }
               		        if( isset($date) && isset($tempDisplay) )$tempDisplay .= sprintf('%s', str_replace(' ', "<br/>", $date));
               		    }
-              		    echo '<div class="HeaderRight" style="width:15%;text-align:right;vertical-align:middle">'.$tempDisplay.'</div>';
+              		    echo '<div class="HeaderRight" style="width:min-content;text-align:right;vertical-align:middle">'.$tempDisplay.'</div>';
 
 
               	     ?>
@@ -289,7 +293,7 @@
     					<td class="poursbeername">
     						<h3 style="text-align: center">Last Pour</h3>
     					</td>
-					<?php 
+						<?php 
 					if(!$config[ConfigNames::ShowPourListOnHome]){
 					    $poursManager = new PourManager();
 					    $page = 1;
@@ -301,12 +305,11 @@
             		?>
     				<?php $pour = count($poursList)>0?array_values($poursList)[0]:null;?>
     				<?php if(null !== $pour) {?>
-
-    					<td class="poursbeername">
+						<td class="poursbeername">
     						<h1 style="font-size: 1em"><?php echo $pour->get_beerName(); ?></h1>
 
     					</td>
-                        <td class="poursamount">
+						<td class="poursamount">
                             <h2><?php echo $pour->get_amountPouredDisplay(); ?>oz</h2>
                         </td>
     				<?php } ?>
