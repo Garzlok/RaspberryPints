@@ -339,7 +339,7 @@
 			    if($numberOfPours > 0) echo "<h1 style=\"text-align: center;\">Pours</h1>";
 				if($numberOfPours > 0) printPoursList($poursList);
 			?>
-			<div class="copyright">Feeds provided by: <a href="https://untappd.com" style="color:#FFCC00;">Untappd</a> for Gierlach's Peak Brewing Co.</div>
+			<div class="copyright">Feeds provided by: <a href="https://untappd.com" style="color:#FFCC00;">UNTAPPD</a> for Gierlach's Peak Brewing Co.</div>
 		</div>
 
 		<?php if($config[ConfigNames::DisplayRowsSameHeight]) { ?>
