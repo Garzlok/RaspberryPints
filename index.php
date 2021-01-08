@@ -237,21 +237,15 @@
 				</div>
 				<div class="HeaderCenter" onClick="toggleFullScreen()">
 					<?php
-					if( $config[ConfigNames::ShowUntappdBreweryFeed] &&
-					    !empty($config[ConfigNames::BreweryID]) ){
-					        try{
-    						    require_once __DIR__.'/includes/functions.php';
-    						    utBreweryFeed($config, $config[ConfigNames::BreweryID]);
-					        }catch(Exception $e){
-					        //do nothing
-					        }
-						}
-					    if (strlen($config[ConfigNames::HeaderText]) > ($config[ConfigNames::HeaderTextTruncLen])) {
+					if (strlen($config[ConfigNames::HeaderText]) > ($config[ConfigNames::HeaderTextTruncLen])) {
 							echo htmlentities(substr($config[ConfigNames::HeaderText],0,$config[ConfigNames::HeaderTextTruncLen]) . "...");
 						} else {
 							echo htmlentities($config[ConfigNames::HeaderText]);
 						}
-
+					if( true ){
+					require_once __DIR__.'/includes/functions.php';
+					utBreweryFeed($config, $config[ConfigNames::BreweryID]);
+					}
 					?>
 				</div>
           		<?php
@@ -340,7 +334,7 @@
 			    if($numberOfPours > 0) echo "<h1 style=\"text-align: center;\">Pours</h1>";
 				if($numberOfPours > 0) printPoursList($poursList);
 			?>
-			div class="copyright">Feeds provided by: <a href="https://untappd.com" style="color:#FFCC00;">Untappd</a> for Gierlach's Peak Brewing Co.</div>
+			<div class="copyright">Feeds provided by: <a href="https://untappd.com" style="color:#FFCC00;">Untappd</a> for Gierlach's Peak Brewing Co.</div>
 		</div>
 
 		<?php if($config[ConfigNames::DisplayRowsSameHeight]) { ?>
