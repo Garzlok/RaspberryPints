@@ -18,6 +18,15 @@
        url('img/fonts/Roboto/roboto-v20-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
        url('img/fonts/Roboto/roboto-v20-latin-regular.svg#Roboto') format('svg'); /* Legacy iOS */
 }
+@font-face {
+  font-family: "Pinkoff Caps Bold";
+  src: url(img/fonts/Pinkoff/pinkoff.eot); /* IE9*/
+  src: url(img/fonts/Pinkoff/pinkoff.eot) format("embedded-opentype"), /* IE6-IE8 */
+  url(img/fonts/Pinkoff/pinkoff.woff2) format("woff2"), /* chrome、firefox */
+  url(img/fonts/Pinkoff/pinkoff.woff) format("woff"), /* chrome、firefox */
+  url(img/fonts/Pinkoff/pinkoff.ttf) format("truetype"), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+  url(img/fonts/Pinkoff/pinkoff.svg) format("svg"); /* iOS 4.1- */
+}
 .temp-container{
 	position: relative;
 	left: 5px;
@@ -162,16 +171,20 @@ img {
 	color: white;
 	font-weight: bold;
 	text-align: left;
-}
 .HeaderCenter {
 	width: 50%;
 	height: 50px;
 	text-align: center;
 	display:table-cell;
-	font: 2em You Rook Marbelous;
+/*Untappd Quasi Styling*/
+	font: 2em Pinkoff Caps Bold;
+	text-shadow: 2px 2px #FFCC0;
+	color: #FFCC00;
+	font-weight: normal;
+	/*font: 2em You Rook Marbelous;
 	text-shadow: 2px 2px white;
 	color: #FE6600;
-	font-weight: normal;
+	font-weight: normal;*/
 	vertical-align: middle;
 	padding-top: 0px;
 }
