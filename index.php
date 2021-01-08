@@ -242,10 +242,15 @@
 						} else {
 							echo htmlentities($config[ConfigNames::HeaderText]);
 						}
-					if( true ){
-					require_once __DIR__.'/includes/functions.php';
-					utBreweryFeed($config, $config[ConfigNames::BreweryID]);
-					}
+					if( $config[ConfigNames::ShowUntappdBreweryFeed] &&
+					    !empty($config[ConfigNames::BreweryID]) ){
+					        try{
+    						    require_once __DIR__.'/includes/functions.php';
+    						    utBreweryFeed($config, $config[ConfigNames::BreweryID]);
+					        }catch(Exception $e){
+					        //do nothing
+					        }
+						}	
 					?>
 				</div>
           		<?php
