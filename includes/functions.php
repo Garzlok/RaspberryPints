@@ -25,8 +25,8 @@ function utBreweryFeed($config, $breweryId) {
 			
 			$j = $i->beer->beer_name;
 			$bfeeds .="<td width=20%><table width=95%><tr><td><div class='beerfeed'>";
-			$bfeeds .="<center><div class=circular style='width: 49px;height: 49px;background-image: url(". $i->user->user_avatar ."); background-size: cover;border: 2px #FFCC00 solid; border-radius: 100px; margin: 1px;float: left;'></div>";
-			$bfeeds .="<center><div class=circular style='width: 49px;height: 49px;background-image: url(". $i->beer->beer_label .");background-size: cover; display: block; border: 2px #FFCC00 solid; border-radius: 100px; margin: 1px; float: right'></div>";
+			$bfeeds .="<center><div class=circular style='width: 53px;height: 53px;background-image: url(". $i->user->user_avatar ."); background-size: cover;border: 2px #FFCC00 solid; border-radius: 100px; margin: 1px;float: left;'></div>";
+			$bfeeds .="<center><div class=circular style='width: 53px;height: 53px;background-image: url(". $i->beer->beer_label .");background-size: cover; display: block; border: 2px #FFCC00 solid; border-radius: 100px; margin: 1px; float: right'></div>";
 
 			// $bfeeds .="".$i->user->user_name."<br />";
 					
