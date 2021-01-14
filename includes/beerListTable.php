@@ -23,7 +23,7 @@ if($editting) $maxTapCol = 1;
     			<?php if(($editting || $config[ConfigNames::ShowTapNumCol]) &&
 				         beerListShouldDisplayRow($editting, $col, $config[ConfigNames::TapNumColNum])){ ?>
     				<th class="tap-num">
-    					<!--TAP<br>#-->
+    					TAP
 						<?php DisplayEditShowColumn($editting, $config, $col, ConfigNames::TapNumColNum)?>
     					<input type="hidden" name="<?php echo ConfigNames::TapNumColNum;?>" id="<?php echo ConfigNames::TapNumColNum;?>" value="<?php echo abs($config[ConfigNames::TapNumColNum]);?>"/>
 					</th>
@@ -261,8 +261,12 @@ if($editting) $maxTapCol = 1;
     					<?php 
     					$abv = $beer['abv'];
     					if(!isset($abv) && $sgOg && $sgFg) $abv = ($sgOg - $sgFg) * 131; 
-    					?>	
+    					?>						
     					<?php if(($config[ConfigNames::ShowAbvImg])) { ?>
+						<?php } 
+    					if((!$config[ConfigNames::ShowAbvImg] ||
+    					     $config[ConfigNames::ShowAbvTxtWImg] )){ ?>
+    						<?php if(NULL !== $abv && $abv>=0){?><h2><?php echo number_format($abv, 1, '.', ',')."%"; ?> ABV</h2><?php }?>
     						<div class="abv-container">
 							<?php
 							if(NULL !== $abv && $abv>=0){
@@ -276,10 +280,6 @@ if($editting) $maxTapCol = 1;
 							}
 							?>
     						</div>
-    					<?php } 
-    					if((!$config[ConfigNames::ShowAbvImg] ||
-    					     $config[ConfigNames::ShowAbvTxtWImg] )){ ?>
-    						<?php if(NULL !== $abv && $abv>=0){?><h2><?php echo number_format($abv, 1, '.', ',')."%"; ?> ABV</h2><?php }?>
     					<?php } ?>
     					<?php if(isset($beer)){ ?>
     						<?php if($config[ConfigNames::ShowCalories]){ ?>
@@ -299,7 +299,7 @@ if($editting) $maxTapCol = 1;
     						</h3>
     						<?php } ?>
     					<?php if(($editting || $config[ConfigNames::ShowGravity]) && $beer['og'] > 0){ ?>
-    						<h3>OG:<?php echo convert_gravity($beer['og'], $beer['ogUnit'], $config[ConfigNames::DisplayUnitGravity]); echo $config[ConfigNames::DisplayUnitGravity] != UnitsOfMeasure::GravitySG?$config[ConfigNames::DisplayUnitGravity]:''; ?></h3>
+    						<h2>OG:<?php echo convert_gravity($beer['og'], $beer['ogUnit'], $config[ConfigNames::DisplayUnitGravity]); echo $config[ConfigNames::DisplayUnitGravity] != UnitsOfMeasure::GravitySG?$config[ConfigNames::DisplayUnitGravity]:''; ?></h2>
     					<?php } ?>
     				<?php } ?>
 				<?php } ?>
@@ -437,3 +437,4 @@ if($editting) $maxTapCol = 1;
 		<?php } ?>
 	</tbody>
 </table>
+
