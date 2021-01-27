@@ -289,7 +289,7 @@
           	     ?>
           			   <div class="temp-container">
           			   <div class="temp-indicator">
-          			   		<div class="temp-full" style="height:<?php echo convert_temperature($temp, $tempUnit, UnitsOfMeasure::TemperatureFahrenheight); ?>%; padding-right: 5px"></div>
+          			   		<div class="temp-full" style="height:<?php echo convert_temperature($temp*.10, $tempUnit, UnitsOfMeasure::TemperatureFahrenheight); ?>%; padding-right: 5px"></div>
           			   </div>
           		        </div>
           		<?php }elseif($config[ConfigNames::ShowLastPour]) { ?>
