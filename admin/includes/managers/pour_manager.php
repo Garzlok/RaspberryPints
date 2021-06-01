@@ -287,7 +287,7 @@ class PourManager extends Manager{
 			        //$foursquareId, $userLat, $userLong, 
 			        '', '', '', 
 			        //$shout, 
-			        'Poured with love by @raspberrypints', 
+			        'Poured with pride at Gierlachs Peak Brewing Company.', 
 			        //$facebook, $twitter, $foursquare , $rating
 			        false, false, false, '');
 			}
