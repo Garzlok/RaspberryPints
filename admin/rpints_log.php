@@ -9,9 +9,6 @@
 	require_once __DIR__.'/includes/managers/rpintsLog_manager.php'; 
 	$htmlHelper = new HtmlHelper();
 	$config = getAllConfigs();
-	$beerColSpan = 1;
-	$i = 0;
-	$totalTemps = 0;
 	
 	$rpintsLogManager  = new RPintsLogManager();
 	
@@ -36,12 +33,13 @@
 	$page = (isset($_POST['page'])?$_POST['page']:1);
 	$maxPage =  (isset($_POST['maxPage'])?$_POST['maxPage']:1);
 	$lastId =  (isset($_POST['lastId'])?$_POST['lastId']:-1);
+	$lastDate =  (isset($_POST['lastDate'])?$_POST['lastDate']:null);
 	$page = min($page, $maxPage);
 	if($changed) $page = 1;
 	$rowsPerPage = $config[ConfigNames::DefaultRowsPerPage] ;
-	$logList = $rpintsLogManager->getLastLogMessagesFiltered($page, $rowsPerPage, $totalRows, $startDate.' '.$startTime, $endDate.' '.$endTime, $process, $category, $lastId);
+	$logList = $rpintsLogManager->getLastLogMessagesFiltered($page, $rowsPerPage, $totalRows, $startDate.' '.$startTime, $endDate.' '.$endTime, $process, $category, $lastId, $lastDate);
 	$maxPage = ceil(($totalRows)/$rowsPerPage);
-	
+
 	if( isset($_POST['dataOnly']) && $_POST['dataOnly'] = 'TRUE')
 	{
 	    echo "[";
@@ -58,6 +56,7 @@
 	$processes = $rpintsLogManager->getAllProcesses();
 	$categories = $rpintsLogManager->getAllCategories();
 	$maxId = -1;
+	$lastDate = '1900-01-01';
 	
 	if(isset( $_SESSION['myusername'] )){
 	    require_once __DIR__.'/header.php';
@@ -71,7 +70,7 @@
 	    <link href="styles/layout.css" rel="stylesheet" type="text/css" />
 	    <link href="styles/wysiwyg.css" rel="stylesheet" type="text/css" />
 	    <!-- Theme Start -->
-	    <link href="<?php echo $stylesheet?>" rel="stylesheet" type="text/css" />
+	    <link href="<?php /** @var mixed $stylesheet **/echo $stylesheet?>" rel="stylesheet" type="text/css" />
 	    <!-- Theme End -->
 	    <link href='http://fonts.googleapis.com/css?family=Fredoka+One' rel='stylesheet' type='text/css'>
 	    <?php require __DIR__.'/scripts.php'; ?>
@@ -113,7 +112,7 @@ if(isset( $_SESSION['myusername'] ))include 'top_menu.php';
                         <td>
                         </td>
             		</tr>
-					<?php $columnCount= 4; include "includes/paginateTableRow.php"; ?> 
+					<?php /** @var mixed $columnCount **/$columnCount= 4; include "includes/paginateTableRow.php"; ?> 
                     <tr id="manDates" <?php echo $interval!=0?'style="display:none;"':''; ?>>
                         <td>Start Date:</td>
                         <td><input type="date" name="startDate" value="<?php echo $startDate; ?>"></td>
@@ -201,7 +200,10 @@ if(isset( $_SESSION['myusername'] ))include 'top_menu.php';
             	?>
                         <?php 
                             foreach($logList as $log) {
-                                if($log->get_id() > $maxId) $maxId = $log->get_id();
+                                if($log->get_id() > $maxId){
+                                    $maxId = $log->get_id();
+                                    $maxDate = $log->get_modifiedDate();
+                                }
                         ?>
                         	<tr>
                                 <td style="vertical-align: middle;">
@@ -286,8 +288,11 @@ if(isset( $_SESSION['myusername'] ))include 'left_bar.php';
 			$('#tableLog tbody tr:eq('+position+') td:eq(4)').html(occurances);
 		}
 		
-    	setInterval(addNewLogMessages, 5000)
+    	<?php if ($page == 1 ) {?> 
+    	setInterval(addNewLogMessages, 5000); 
+    	<?php }?>
     	var lastId = <?php echo $maxId?>-2;
+    	var lastDate = "<?php echo $maxDate?>";
     	var totalRows = <?php echo $totalRows ?>;
     	function addNewLogMessages(){
         	if( !$('#autoRefresh').is(':checked') ) return;
@@ -300,6 +305,7 @@ if(isset( $_SESSION['myusername'] ))include 'left_bar.php';
     		data['process']       = "<?php echo $process; ?>";
     		data['category']      = "<?php echo $category; ?>";
     		data['lastId']        = lastId;
+    		data['lastDate']      = lastDate;
     		data['dataOnly']      = "TRUE"
     		$.ajax(
                 {
@@ -310,23 +316,23 @@ if(isset( $_SESSION['myusername'] ))include 'left_bar.php';
         
                        success: function(response)
                        {
-                           var id_first = getRowId(0);
-                           var id_second = getRowId(1);
+                            var ids = [];
                             var newLines = JSON.parse(response);
+                            for( var ii = 0; ii < newLines.length; ii ++){
+                            	ids.push(getRowId(ii));
+                            }
                             //The list is order ID desc so we want to add the list of the list to the the table first
                             // I.E. response 7,6,5 we want 7 on top so add 5, 6, 7
                             for( var ii = newLines.length-1; ii >= 0 ; ii --){
                 				var newLine = newLines[ii];
-                            	if(id_first == newLine.id){
-                            		updateOccurances(0, newLine.id, newLine.modifiedDate, newLine.occurances);
-                            	}
-                            	else if(id_second == newLine.id){
-                            		updateOccurances(1, newLine.id, newLine.modifiedDate, newLine.occurances);
+                            	if(ids.indexOf(newLine.id) != null){
+                            		updateOccurances(ids.indexOf(newLine.id), newLine.id, newLine.modifiedDate, newLine.occurances);
                             	}
                             	else
                             	{
                                 	//Found a new record in the database increament the last one
                             		lastId = newLine.id;
+                            		lastDate = newLine.modifiedDate
                                     addRowTop();
                                     var newRow = $('#tableLog tbody tr:eq(0)')
                                     newRow.find('td:eq(0)').html('<input type="hidden" name="id"  value="'+newLine.id+'" />' +newLine.modifiedDate);

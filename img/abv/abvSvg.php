@@ -1,5 +1,4 @@
 <?php header("Content-type: image/svg+xml"); ?>
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 
 <?php
 $foamRgb="";
@@ -10,8 +9,8 @@ if(isset($_GET['rgb']))
     $rgbBackground = $_GET['rgb'];
     $rgb = explode(',',$_GET['rgb']);
     $r = $rgb[0];
-    $g = $rgb[1];
-    $b = $rgb[2];
+    //$g = $rgb[1];
+    //$b = $rgb[2];
     if ($r<60) { $foamRgb = "159,129,112"; }
     elseif ($r<190) { $foamRgb = "255,250,205"; }
     else { $foamRgb = "255,255,255"; }

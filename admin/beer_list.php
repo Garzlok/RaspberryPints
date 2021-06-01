@@ -9,8 +9,8 @@ if (isset($_POST['inactivateBeer'])) {
 	$beerManager->Inactivate($_POST['id']);		
 }
 
-$beers = $beerManager->GetAllActive();
-$breweryList = $breweryManager->GetAll()
+$beers = $beerManager->GetAllActiveWithLastBatchId();
+//$breweryList = $breweryManager->GetAll()
 ?>
 	<!-- Start Header  -->
 <body>
@@ -150,7 +150,7 @@ include 'top_menu.php';
 									</th>
 								</tr>
 								<tr class="intborder thick" id="beerInfo<?php echo $beer->get_id() ?>" style="display:none">
-									<td>
+									<td style="width:35%; margin: 0; padding: 0;">
 										<p><b style="text-decoration: underline;">Vitals</b></p>
 										<p>
                                         <b>Untappd:</b>
@@ -202,9 +202,15 @@ include 'top_menu.php';
 												echo "N/A";
 										?>
                                         </p>
+                                        <p>
+                                        <b>Batches:</b>
+										<?php
+										echo $beer->get_lastBatchNumber();
+										?>
+                                        </p>
 										
 									</td>
-									<td colspan="3">
+									<td colspan="3" style="width:55%; margin: 0; padding: 0;">
 										<p style="padding-bottom: 1px"><b  style="text-decoration: underline;">Fermentables:</b></p><p>
 						                    <?php
 						                      $fermentables = $beerManager->GetFermentables($beer->get_id());
@@ -231,10 +237,10 @@ include 'top_menu.php';
 						                    ?>
 										</p>
 									</td>
-									<td style="width:5%"></td>
+									<td style="width:10%; margin: 0; padding: 0;"></td>
 								</tr>
 								<tr class="intborder" id="beerNotes<?php echo $beer->get_id() ?>" style="display:none">
-									<td colspan="2">
+									<td colspan="2"style="width:70%; text-align: center;">
 										<?php
 										if(strlen($beer->get_notes()) < 200){
 										  echo $beer->get_notes() ;
@@ -243,16 +249,20 @@ include 'top_menu.php';
 										}
 										?>
 									</td>
-									<td style="width:5%; text-align: center;">
-										<input name="editBeer" type="button" class="btn" value="Edit" onClick="window.location='beer_form.php?id=<?php echo $beer->get_id()?>'" />
+									<td style="width:10%; text-align: center; vertical-align: middle; margin: 0; padding: 0;" >
+									<?php if($beer->get_lastBatchNumber()){?>
+										<input name="beerBatches" type="button" class="btn" value="Batches" style="text-align: center; margin: 0;" onClick="window.location='beerBatch_list.php?id=<?php echo $beer->get_id()?>'" />
+									<?php }?>
 									</td>
-									<td  style="width:5%; text-align: center;">
+									<td style="width:10%; text-align: center; vertical-align: middle; margin: 0; padding: 0;">
+										<input name="editBeer" type="button" class="btn" value="Edit" style="text-align: center; margin: 0;" onClick="window.location='beer_form.php?id=<?php echo $beer->get_id()?>'" />
+									</td>
+									<td style="width:10%; text-align: center; vertical-align: middle; margin: 0; padding: 0">
 										<form method="POST">
-											<input type='hidden' name='id' value='<?php echo $beer->get_id()?>'/>
-											<input class="inactivateBeer btn" name="inactivateBeer" type="submit" value="Delete" />
+											<input type='hidden' name='id' value='<?php echo $beer->get_id()?> '/>
+											<input class="inactivateBeer btn" style="text-align: center; margin: 0;" name="inactivateBeer" type="submit" value="Delete" />
 										</form>
 									</td>
-									<td style="width:5%"></td>
 								</tr>
 					<?php 
 							}

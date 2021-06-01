@@ -6,7 +6,7 @@ require_once __DIR__.'/Pintlabs/Service/Untappd.php';
 function utBreweryFeed($config, $breweryId) {
 	
     if(!isset($breweryId))return;
-	$cachefile = "cache/bfeed";
+    $cachefile = __DIR__."/cache/bfeed";
 	$filetimemod = 0;
 	if(file_exists($cachefile)) {
 		$filetimemod = filemtime($cachefile)+600;
@@ -19,11 +19,11 @@ function utBreweryFeed($config, $breweryId) {
 		$ut = new Pintlabs_Service_Untappd($config);
 		$bfeed = $ut->breweryFeed($breweryId, '', '', 3)->response->checkins;
 	
-		$bfeeds .="<table width=95%><tr>";
+		$bfeeds ="<table width=95%><tr>";
 
 		foreach ($bfeed->items as $i) {
 			
-			$j = $i->beer->beer_name;
+			//$j = $i->beer->beer_name;
 			$bfeeds .="<td width=20%><table width=95%><tr><td><div class='beerfeed'>";
 			$bfeeds .="<center><div class=circular style='width: 49px;height: 49px;background-image: url(". $i->user->user_avatar ."); background-size: cover;border: 2px #FFCC00 solid; border-radius: 100px; margin: 1px;float: left;'></div>";
 			$bfeeds .="<center><div class=circular style='width: 49px;height: 49px;background-image: url(". $i->beer->beer_label .");background-size: cover; display: block; border: 2px #FFCC00 solid; border-radius: 100px; margin: 1px; float: right'></div>";

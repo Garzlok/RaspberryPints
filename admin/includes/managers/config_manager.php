@@ -2,7 +2,8 @@
 
     require_once __DIR__.'/../conn.php';
     require_once __DIR__.'/../config_names.php';
-    require_once __DIR__.'/../units_of_measures.php';
+    require_once __DIR__.'/../units_of_measures.php';    
+    /** @var mixed $stylesheet **/
 	$stylesheet = getConfigValue(ConfigNames::AdminThemeColor);
 
 	function getAllConfigs()
@@ -29,7 +30,6 @@
 	function getConfigurableConfigs()
 	{	
 		global $mysqli;
-		$config = array();
 		$sql = "SELECT * FROM config WHERE showOnPanel = 1 ORDER BY displayName";
 		return $mysqli->query($sql);
 	}
@@ -58,7 +58,6 @@
 	function getTapConfigurableConfigs()
 	{	
 		global $mysqli;
-		$config = array();
 		$sql = "SELECT * FROM config WHERE configName IN ('".ConfigNames::UseTapValves."','".ConfigNames::Use3WireValves."', '".ConfigNames::UseFanControl."', '".ConfigNames::UseFlowMeter."', '".ConfigNames::UseKegWeightCalc."', '".ConfigNames::UsePlaato."', '".ConfigNames::AllowManualPours."') ORDER BY id";
 		//echo $sql; exit;
 		return $mysqli->query($sql);
@@ -67,7 +66,6 @@
 	function getValveConfigurableConfigs()
 	{
 	    global $mysqli;
-	    $config = array();
 	    $sql = "SELECT * FROM config WHERE configName IN ('".ConfigNames::UseTapValves."','".ConfigNames::Use3WireValves."') ORDER BY id";
 	    //echo $sql; exit;
 	    return $mysqli->query($sql);
@@ -76,7 +74,6 @@
 	function getDisplayUnitConfigs()
 	{	
 		global $mysqli;
-		$config = array();
 		$sql = "SELECT * FROM config WHERE configName like 'displayUnit%' ORDER BY displayName";
 		return $mysqli->query($sql);
 	}
@@ -96,6 +93,7 @@
 	
 	function setConfigurationsFromArray($newValues, &$oldValues)
 	{
+	    /** @var mixed $index **/
 		foreach( array_keys( $newValues ) as $index=>$key ) {
 			$constKey = ucwords($key);
 			if(!defined('ConfigNames::'.$constKey))continue;
