@@ -35,9 +35,7 @@
 	text-align:left;
 }
 .temp-indicator{
-	position: absolute;
-	left: 15px;
-	height: 80%;
+	height: 100px;
 	width: 100%;
 	background: url(img/temperature/stroke2.png) no-repeat bottom left;  
 	background-size: auto;
@@ -197,6 +195,14 @@ img {
 	font-weight: 400;
 	text-align: center;
 	vertical-align: middle;
+}
+.HeaderRightSub{
+	display:table-cell;
+	font: .85em Georgia;
+	color: white;
+	font-weight: bold;
+	text-align: right;
+	align-content: right;
 }
 
 .rating.small {

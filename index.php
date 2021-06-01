@@ -3,6 +3,10 @@
 		header('Location: install/index.php', true, 303);
 		die();
 	}
+	//Start a session for the first headerRight call because session needs to be started before HTML is sent
+	if (session_status() === PHP_SESSION_NONE) {
+	    session_start();
+	}
 ?>
 <?php
 	require_once __DIR__.'/admin/includes/managers/config_manager.php';
@@ -13,6 +17,7 @@
 	require_once __DIR__.'/admin/includes/managers/tempProbe_manager.php';
 	require_once __DIR__.'/admin/includes/managers/bottle_manager.php';
 	require_once __DIR__.'/admin/includes/managers/pour_manager.php';
+
 
 	$plaatoPins = array(
 	    "style" => 'v64',
@@ -42,7 +47,8 @@
 		{
 			$beeritem = array(
 				"id" => $b['id'],
-				"beerId" => $b['beerId'],
+			    "beerId" => $b['beerId'],
+			    "beerBatchId" => $b['beerBatchId'],
 				"beername" => $b['name'],
 				"untID" => $b['untID'],
 				"style" => $b['style'],
@@ -110,7 +116,8 @@
 		{
 			$beeritem = array(
 				"id" => $b['id'],
-				"beerId" => $b['beerId'],
+			    "beerId" => $b['beerId'],
+			    "beerBatchId" => $b['beerBatchId'],
 				"beername" => $b['name'],
 				"untID" => $b['untID'],
 				"style" => $b['style'],
@@ -224,7 +231,7 @@
 	</head>
 
 <!--<body> -->
-<body onload="wsconnect(); <?php if($config[ConfigNames::ShowTempOnMainPage])echo "setTimeout(function(){window.location.reload(1);}, 900000);"; ?>">
+<body onload="wsconnect(); <?php if($config[ConfigNames::RefreshTapList])echo "setTimeout(function(){window.location.reload(1);}, 900000);"; ?>">
 		<div class="bodywrapper" id="mainTable">
 			<!-- Header with Brewery Logo and Project Name -->
 			<div class="header clearfix">
@@ -253,81 +260,9 @@
 						}	
 					?>
 				</div>
-          		<?php
-      		        $temp = null;
-      		        if(!$config[ConfigNames::ShowLastPour]){
-      		    ?>
-              		<?php
-              		    $tempDisplay = "";
-              		    $date = null;
-              		    if($config[ConfigNames::ShowTempOnMainPage]) {
-              		        if(!isset($plaatoTemps) || count($plaatoTemps) == 0)
-              		        {
-                  		       $tempProbeManager = new TempProbeManager();
-                  		       $tempInfos = $tempProbeManager->get_lastTemp();
-              		        }else{
-              		            $tempInfos = $plaatoTemps;
-              		        }
-              		        foreach($tempInfos as $tempInfo){
-              		            $temp = $tempInfo["temp"];
-              		            $tempUnit = $tempInfo["tempUnit"];
-              		            $probe = $tempInfo["probe"];
-              		            $date = MAX($tempInfo["takenDate"], $date);
-              		            $tempDisplay .= sprintf('%s:%0.1f%s<br/>', $probe, convert_temperature($temp, $tempUnit, $config[ConfigNames::DisplayUnitTemperature]), $config[ConfigNames::DisplayUnitTemperature] );
-              		        }
-              		        if( isset($date) && isset($tempDisplay) )$tempDisplay .= sprintf('%s', str_replace(' ', "<br/>", $date));
-              		    }
-              		    echo '<div class="HeaderRight" style="width:min-content;text-align:right;vertical-align:middle">'.$tempDisplay.'</div>';
-
-
-              	     ?>
-				<?php }?>
-
-				<div class="HeaderRight">
-          		<?php
-          		    if(null !== $temp) {
-          	     ?>
-          			   <div class="temp-container">
-          			   <div class="temp-indicator">
-          			   		<div class="temp-full" style="height:<?php echo convert_temperature($temp*.10, $tempUnit, UnitsOfMeasure::TemperatureFahrenheight); ?>%; padding-right: 5px"></div>
-          			   </div>
-          		        </div>
-          		<?php }elseif($config[ConfigNames::ShowLastPour]) { ?>
-				<table>
-    				<tr>
-    					<td class="poursbeername">
-    						<h3 style="text-align: center">Last Pour</h3>
-    					</td>
-						<?php 
-					if(!$config[ConfigNames::ShowPourListOnHome]){
-					    $poursManager = new PourManager();
-					    $page = 1;
-					    $limit = 1;
-					    $totalRows = 0;
-					    $poursList = $poursManager->getLastPours($page, $limit, $totalRows);
-					    $numberOfPours = 0;//count($poursList);
-            		}
-            		?>
-    				<?php $pour = count($poursList)>0?array_values($poursList)[0]:null;?>
-    				<?php if(null !== $pour) {?>
-						<td class="poursbeername">
-    						<h1 style="font-size: 1em"><?php echo $pour->get_beerName(); ?></h1>
-
-    					</td>
-						<td class="poursamount">
-                            <h2><?php echo $pour->get_amountPouredDisplay(); ?>oz</h2>
-                        </td>
-    				<?php } ?>
-                    </tr>
-                </table>
-          		<?php }elseif($config[ConfigNames::ShowRPLogo]) { ?>
-					<?php if($config[ConfigNames::UseHighResolution]) { ?>
-						<a href="http://www.raspberrypints.com"><img src="img/RaspberryPints-4k.png" height="200" alt=""></a>
-					<?php } else { ?>
-						<a href="http://www.raspberrypints.com"><img src="img/RaspberryPints.png" height="100" alt=""></a>
-					<?php } ?>
-				<?php } ?>
-				</div>
+          		<div class="HeaderRight" id="HeaderRight" style="vertical-align:top">
+          		<?php include_once 'includes/headerRight.php';?>
+          		</div>
 			</div>
 			<!-- End Header Bar -->
 
@@ -342,8 +277,37 @@
 			<div class="copyright">Feeds provided by: <a href="https://untappd.com" style="color:#FFCC00;">UNTAPPD</a> for Gierlach's Peak Brewing Co.</div>
 		</div>
 
-		<?php if($config[ConfigNames::DisplayRowsSameHeight]) { ?>
+	<script type="text/javascript" src="admin/js/enhance.js"></script>	
+	<script type='text/javascript' src='admin/js/excanvas.js'></script>
+	<script type='text/javascript' src='admin/js/jquery-1.11.0.min.js'></script>
+	<script type='text/javascript' src='admin/js/jquery-ui.js'></script>
+	<script type='text/javascript' src='admin/js/jquery.validate.js'></script>
+	<script type='text/javascript' src='admin/scripts/jquery.wysiwyg.js'></script>
+	<script type='text/javascript' src='admin/scripts/visualize.jQuery.js'></script>
+	<script type="text/javascript" src='admin/scripts/functions.js'></script>	
+	<script type="text/javascript" src='admin/scripts/jscolor.js'></script>	
 		<script type="text/javascript">
+		
+		function loadHeaderRight()
+		{
+			$.ajax(
+	            {
+	                   type: "GET",
+	                   url: "includes/headerRight.php",
+	                   data: null,
+	                   cache: false,
+	    
+	                   success: function(response)
+	                   {
+	                    $('#HeaderRight')[0].innerHTML = response;
+	                   }
+	             });
+			setTimeout(loadHeaderRight, <?php echo $config[ConfigNames::InfoTime]*1000?>); 
+		}
+		setTimeout(loadHeaderRight, <?php echo $config[ConfigNames::InfoTime]*1000?>); 
+
+		<?php if($config[ConfigNames::DisplayRowsSameHeight]) { 
+		
 		window.onload = function(){
 			tables = document.getElementsByTagName("table")
 			for (var i = 0; i < tables.length; i++) {
@@ -364,9 +328,9 @@
 
 			wsconnect();
 
-			<?php if($config[ConfigNames::ShowTempOnMainPage])echo "setTimeout(function(){window.location.reload(1);}, 900000);"; ?>
 		}
-		</script>
+
 		<?php } ?>
+		</script>
 	</body>
 </html>
