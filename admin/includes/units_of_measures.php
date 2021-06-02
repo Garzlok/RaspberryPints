@@ -130,7 +130,7 @@ function convert_gravity($value, $unitsFrom, $unitsTo){
         $value = $value / 1.04; 
     }
     else if($unitsFrom == UnitsOfMeasure::GravityPlato && $unitsTo == UnitsOfMeasure::GravitySG){
-        $value = round( 1.0+(($value*4.0)/1000.0),3);
+        $value = sprintf('%0.3d', 1+($value*4));
     }
     else if($unitsFrom == UnitsOfMeasure::GravityPlato && $unitsTo == UnitsOfMeasure::GravityBrix){
         $value = $value * 1.04;
@@ -183,12 +183,6 @@ function convert_weight($value, $unitsFrom, $unitsTo){
     }
     else if($unitsFrom == UnitsOfMeasure::WeightKiloGrams && $unitsTo == UnitsOfMeasure::WeightPounds){
         $value = $value * 2.20462;
-    }
-    else if($unitsFrom == UnitsOfMeasure::WeightKiloGrams && $unitsTo == UnitsOfMeasure::WeightGrams){
-        $value = $value * 1000;
-    }
-    else if($unitsFrom == UnitsOfMeasure::WeightGrams && $unitsTo == UnitsOfMeasure::WeightKiloGrams){
-        $value = $value / 1000;
     }
     return $value;
 }

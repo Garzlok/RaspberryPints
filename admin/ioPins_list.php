@@ -1,5 +1,4 @@
 <?php
-/** @var mixed $noHeadEnd */
 $noHeadEnd = True;
 require_once __DIR__.'/header.php';
 ?>

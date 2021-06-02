@@ -8,7 +8,6 @@ $email=($_POST['email']);
 	
 // update data in mysql database
 $sql="UPDATE users SET password='$password' WHERE email='$email'";
-/** @var mixed $mysqli **/
 $result=$mysqli->query($sql);
 
 // if successfully updated.

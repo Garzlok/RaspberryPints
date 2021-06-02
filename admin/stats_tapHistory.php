@@ -11,28 +11,21 @@
 	$config = getAllConfigs();
 	$beerColSpan = 1;
 	$i = 0;
-	//$totalPoured = 0;
+	$totalPoured = 0;
 	
 	$tapManager  = new TapManager();
 	$beerManager = new BeerManager();
 	$userManager = new UserManager();
 	$kegManager = new KegManager();
 	$tapList   = $tapManager->GetAll();
-	$beerList  = $beerManager->GetAllWithBatches();
+	$beerList  = $beerManager->GetAll();
 	$userList  = $userManager->GetAll();
 	$kegList   = $kegManager->GetAll();
 	
 	$groupBy 	= (isset($_POST['groupBy'])?$_POST['groupBy']:"tapId");
 	$startTime 	= (isset($_POST['startDate'])?$_POST['startDate']:"");
 	$endTime   	= (isset($_POST['endDate'])?$_POST['endDate']:"");
-	if(isset($_POST['beerId'])){
-	    $beerExploded = explode("~", $_POST['beerId']);
-	    $beerId 	= $beerExploded[0];
-	    $beerBatchId = $beerExploded[1];
-	}else{
-	    $beerId 	= "";
-	    $beerBatchId = "";
-	}
+	$beerId 	= (isset($_POST['beerId'])?$_POST['beerId']:"");
 	$tapId 	    = (isset($_POST['tapId'])?$_POST['tapId']:"");
 	$kegId 	    = (isset($_POST['kegId'])?$_POST['kegId']:"");
 	$userId 	= (isset($_POST['userId'])?$_POST['userId']:"");
@@ -46,7 +39,7 @@
 	if($changed) $page = 1;
 	$rowsPerPage = $config[ConfigNames::DefaultRowsPerPage] ;
 	$tapEventManager = new TapEventManager();
-	$events = $tapEventManager->getTapEventsFiltered($page, $rowsPerPage, $totalRows, $groupBy, $startTime, $endTime, $tapId, $beerId, $beerBatchId, $userId, $kegId);
+	$events = $tapEventManager->getTapEventsFiltered($page, $rowsPerPage, $totalRows, $groupBy, $startTime, $endTime, $tapId, $beerId, $userId, $kegId);
 	$numberOfEvents = 0;//count($events);
 	$maxPage = ceil(($totalRows)/$rowsPerPage);
 	
@@ -93,19 +86,7 @@ include 'top_menu.php';
                         <td>Beer:</td>
                         <td>
                         	<?php 
-                            	$str = "<select id='beerId' name='beerId' class=''>\n";
-                            	$str .= "<option value=''>All</option>\n";
-                            	foreach($beerList as $item){
-                            	    if( !$item ) continue;
-                            	    $sel = "";
-                            	    if( $beerId != "" && $beerId == ($item->get_beerBatchId()<=0?$item->get_id():$item->get_beerId()) && (($beerBatchId == "" && $item->get_beerBatchId()<=0) || $beerBatchId == $item->get_beerBatchId()) )  $sel .= "selected ";
-                            	    $desc = $item->get_displayName();
-                            	    $str .= "<option value='".($item->get_beerBatchId()<=0?$item->get_id():$item->get_beerId())."~".$item->get_beerBatchId()."~".$item->get_fg()."~".$item->get_fgUnit()."' ".$sel.">".$desc."</option>\n";
-                            	}
-                            	$str .= "</select>\n";
-                            	
-                            	echo $str;
-                            	//echo $htmlHelper->ToSelectList("beerId", "beerId", $beerList, "name", "id", $beerId, "All");
+								echo $htmlHelper->ToSelectList("beerId", "beerId", $beerList, "name", "id", $beerId, "All");
 							?>
                         </td>
                      </tr>
@@ -296,7 +277,6 @@ include 'left_bar.php';
 	        }
 	    }
 	?>
-	<!-- 
     		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
             <script type="text/javascript">
                 google.charts.load('current', {'packages':['bar']});
@@ -304,16 +284,15 @@ include 'left_bar.php';
                 
               function drawChart() {
                 var data = google.visualization.arrayToDataTable([
-                    ['Tap' <?php /*foreach($groups as $group) echo ", '".$group."'"; */?> ]
-                    <?php  /** @var mixed $tap */ 
-//                     foreach ($taps as $tap=>$events){ 
-//                         echo ",[";
-//                         echo $events["-99"];
-//                         foreach ($groups as $group){
-//                             echo ", ".number_format($pours&&$pours[$group]?floatval(preg_replace("/[^0-9|^\.]/", "", $pours[$group]->get_amountPouredDisplay(TRUE))):0, 2, '.', '');
-//                         }
-//                         echo "]";
-//                     }
+                    ['Tap' <?php foreach($groups as $group) echo ", '".$group."'"; ?> ]
+                    <?php foreach ($taps as $tap=>$events){ 
+                        echo ",[";
+                        echo $events["-99"];
+                        foreach ($groups as $group){
+                            echo ", ".number_format($pours&&$pours[$group]?floatval(preg_replace("/[^0-9|^\.]/", "", $pours[$group]->get_amountPouredDisplay(TRUE))):0, 2, '.', '');
+                        }
+                        echo "]";
+                    }
                     ?>
     
                   ]);
@@ -327,7 +306,7 @@ include 'left_bar.php';
               }
 
               
-            </script> -->
+            </script>
         <?php } ?>
     <!-- End Js -->
 </body>

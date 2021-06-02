@@ -14,7 +14,6 @@ class Keg
 	private $_notes; 
 	private $_kegStatusCode;
 	private $_beerId;
-	private $_beerBatchId;
 	private $_active;
 	private $_onTapId;
 	private $_tapNumber;
@@ -77,9 +76,6 @@ class Keg
 	
 	public function get_beerId(){ return $this->_beerId; }
 	public function set_beerId($_beerId){ $this->_beerId = $_beerId; }
-	
-	public function get_beerBatchId(){ return $this->_beerBatchId; }
-	public function set_beerBatchId($_beerBatchId){ $this->_beerBatchId = $_beerBatchId; }
 	
 	public function get_active(){ return $this->_active; }
 	public function set_active($_active){ $this->_active = $_active; }
@@ -205,11 +201,6 @@ class Keg
 		else
 			$this->set_beerId(null);
 		
-		if( isset($postArr['beerBatchId']) )
-		    $this->set_beerBatchId($postArr['beerBatchId']);
-		else
-		    $this->set_beerBatchId(null);
-		
 		if( isset($postArr['active']) )
 			$this->set_active($postArr['active']);
 		else
@@ -317,7 +308,6 @@ class Keg
 			"kegStatusCode: " . $this->get_kegStatusCode() . ", " .
 			"onTapId: " . $this->get_onTapId() . ", " .
 			"beerId: " . $this->get_beerId() . ", " .
-			"beerBatchId: " . $this->get_beerBatchId() . ", " .
 			"active: '" . $this->get_active() . "', " .
 			"emptyWeight: " . $this->get_emptyWeight() . ", " .
 			"emptyWeightUnit: " . $this->get_emptyWeightUnit() . ", " .

@@ -106,7 +106,7 @@ if ($action == 'backup' || $action == 'remove' || $action == 'restore')
     
     $sql_query = '';
     $sql = "USE `" . $databasename . "`;";
-    $mysqli->query($sql);
+    $result = $mysqli->query($sql);
     
     $tables = array();
     $sql = "SELECT tab.table_name, tab.table_type, GROUP_CONCAT(referenced_table_name) AS referenced_table_name
@@ -157,7 +157,7 @@ if ($action == 'backup' || $action == 'remove' || $action == 'restore')
                     $return.= $row[1].";\n\n";
                     $types = explode(",", preg_replace("/\d+,\d+/","", $row[1]));
                 }
-                if($type != 'VIEW' && $table != 'log' && $table != 'templog')
+                if($type != 'VIEW')
                 {
                     $qry = $mysqli->query('SELECT * FROM '.$table);
                     while($qry && $row = $qry->fetch_array(MYSQLI_NUM))
@@ -219,7 +219,7 @@ if ($action == 'remove')
 	}
 
 	$sql = "DROP database " . $databasename . ";";
-	$mysqli->query($sql);
+	$result = $mysqli->query($sql);
 	if($mysqli->error != ""){
 	    $validerror .= "<br><strong>Cannot DROP existing Database[".$databasename."]: " . $mysqli->error . "</strong>";
 	}else{
@@ -256,8 +256,6 @@ if ($action == 'install')
 	echo "Update config files...";
 	flush();
 	
-	/** @var mixed $mainconfigstring **/
-	/** @var mixed $adminconfig1 **/
 	file_put_contents('../../includes/config.php', $mainconfigstring);
 
 	echo "Success!<br>";
@@ -278,7 +276,6 @@ if ($action == 'install')
 
 	$error = false;
 	$sql = "DROP DATABASE `" . $databasename . "`;";
-	/** @var mixed $result **/
 	$result = $mysqli->query($sql);
 	// ignore errors
 	

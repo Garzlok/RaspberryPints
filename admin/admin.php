@@ -2,15 +2,15 @@
 require_once __DIR__.'/header.php';
 if (isset ( $_POST ['reboot'] )) {
 	//echo ("rebooting system: ");	
-    triggerPythonAction("restart");
+	file_get_contents('http://' . $_SERVER['SERVER_NAME'] . '/admin/trigger.php?value=restart');
 }
 if (isset ( $_POST ['shutdown'] )) {
 	//echo ("shutting down system");	
-    triggerPythonAction("shutdown");
+	file_get_contents('http://' . $_SERVER['SERVER_NAME'] . '/admin/trigger.php?value=shutdown');
 }
 if (isset ( $_POST ['restartservice'] )) {
 	//echo ("restarting flowmon service: ");	
-    triggerPythonAction("restartservice");
+	file_get_contents('http://' . $_SERVER['SERVER_NAME'] . '/admin/trigger.php?value=restartservice');
 }
 ?>
 <body id="homepage">

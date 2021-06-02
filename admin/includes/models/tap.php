@@ -4,7 +4,6 @@ class Tap
 	private $_id;  
 	private $_kegId;
 	private $_beerId;
-	private $_beerBatchId;
 	private $_tapNumber;
 	private $_tapRgba;
 	private $_flowPinId;
@@ -34,9 +33,6 @@ class Tap
 
 	public function get_beerId(){ return $this->_beerId; }
 	public function set_beerId($_beerId){ $this->_beerId = $_beerId; }
-
-	public function get_beerBatchId(){ return $this->_beerBatchId; }
-	public function set_beerBatchId($_beerBatchId){ $this->_beerBatchId = $_beerBatchId; }
 	
 	public function get_tapNumber(){ return $this->_tapNumber; }
 	public function set_tapNumber($_tapNumber){ $this->_tapNumber = $_tapNumber; }
@@ -109,11 +105,6 @@ class Tap
 		else
 			$this->set_beerId(null);
 			
-		if( isset($postArr['beerBatchId']) )
-		    $this->set_beerBatchId($postArr['beerBatchId']);
-		else
-		    $this->set_beerBatchId(null);
-			
 		if( isset($postArr['tapNumber']) )
 			$this->set_tapNumber($postArr['tapNumber']);
 		else
@@ -169,7 +160,7 @@ class Tap
         else
             $this->set_loadCellRspPin(null);
         
-        if( isset($postArr['loadCellScaleRatio']) )
+        if( isset($postArr['loadCellTareOffset']) )
             $this->set_loadCellScaleRatio($postArr['loadCellScaleRatio']);
         else
             $this->set_loadCellScaleRatio(null);

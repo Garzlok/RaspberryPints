@@ -89,6 +89,7 @@ class HtmlHelper{
 	}
 	
 	function ShowMessage(){
+		$str = "";
 				
 		if( isset($_SESSION['errorMessage']) ){
 			echo $this->CreateMessage('error', $_SESSION['errorMessage']);

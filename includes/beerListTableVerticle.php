@@ -6,12 +6,7 @@
 	$config = getAllConfigs();
 	$htmlHelper = new HtmlHelper();
 	$row = 0;
-	$MAX_COLUMNS = 7;	
-	/** @var mixed $editingTable **/
-	/** @var mixed $noTableHead **/
-	/** @var mixed $beers **/
-	/** @var mixed $numberOfBeers **/
-	/** @var mixed $tapOrBottle **/
+	$MAX_COLUMNS = 7;
 	$editting = (isset($editingTable) && $editingTable);
 ?>
 
@@ -88,7 +83,7 @@
     			if($tapOrBottle != ConfigNames::CONTAINER_TYPE_KEG  && !isset($beer) ) continue;
     		?>
     			<td class="srm">
-				<?php if(isset($beer) && $beer['beername'] && $beer['srm'] >= 0){ ?>						
+				<?php if(isset($beer) && $beer['srm'] > 0){ ?>						
 					<div class="srm-container">
 						<?php if($config[ConfigNames::ShowSrmImg]){?>
 							<?php echo '<img src="'.($editting?'../':'').'img/srm/'.($beer['srm']>40?40:floor($beer['srm'])).'-srm.png" />'?>

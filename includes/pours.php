@@ -17,7 +17,6 @@ if( isset($_GET['tapId'])){
   echo 'Drank';
   $bottleId = $_GET["bottleId"];
   $sql = "UPDATE bottles SET currentAmount = currentAmount-1  where id=" . $bottleId . ";";
-  /** @var mixed $mysqli **/
   $mysqli->query($sql);
   unset($_GET['bottleId']);
   redirect('../../index.php');
@@ -34,14 +33,14 @@ if( isset($_GET['tapId'])){
 		$config = getAllConfigs();	
 		
 		// Creates arguments from info passed by python script from Flow Meters
-		/** @var mixed $argv **/
 		$ii = 1;
 		$type = $argv[$ii++];
 		if($type == 'Pour'){
 			$RFID = $argv[$ii++];
 			$PIN = $argv[$ii++];
 			$PULSE_COUNT = $argv[$ii++];
-			//$userId = '';
+			$userId = '';
+			if( $RFID == -1) $RFID =1;
 			$pourManager->pour($RFID, $PIN, $PULSE_COUNT);
 			
 		}else if($type == 'Kick'){

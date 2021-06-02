@@ -17,9 +17,5 @@ config['dispatch.debug' ] = True#False
 
 #logging settings for load cells
 config['loadcell.debug' ] = False#True
-
-#logging settings for iSpindel Devices
-config['iSpindel.debug' ] = False#True
-
 #Use fake monitoring to report flow
 config['dispatch.debugMonitoring' ] = False

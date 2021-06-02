@@ -7,7 +7,6 @@ $config = getAllConfigs();
 $htmlHelper = new HtmlHelper();
 $beerColSpan = 1;
 $MAX_COLUMNS = 7;
-/** @var mixed $editingTable */
 $editting = (isset($editingTable) && $editingTable);
 
 $maxTapCol = isset($config[ConfigNames::HozTapListCol])?$config[ConfigNames::HozTapListCol]+1:1;
@@ -18,7 +17,7 @@ if($editting) $maxTapCol = 1;
 	<?php if($editting || $config[ConfigNames::ShowBeerTableHead]){?>
 	<?php echo !$editting?'<thead>':'<tbody>' ?>
 		<tr>
-		<?php /** @var mixed $numberOfBeers */ for($tapCol = 0; $tapCol< $maxTapCol && $numberOfBeers > $tapCol; $tapCol++){ ?>
+		<?php for($tapCol = 0; $tapCol< $maxTapCol && $numberOfBeers > $tapCol; $tapCol++){ ?>
 			<?php $beerColSpan = 1; ?>
 			<?php for($col = 1; $col <= $MAX_COLUMNS; $col++){ ?>
     			<?php if(($editting || $config[ConfigNames::ShowTapNumCol]) &&
@@ -109,8 +108,6 @@ if($editting) $maxTapCol = 1;
 	<?php }?>
 		<?php for($i = 1; $i <= ceil($numberOfBeers/$maxTapCol); $i++) {
 			$beer = null;
-			/** @var mixed $beers */
-			/** @var mixed $tapOrBottle */
 			if( isset($beers[$i]) ) $beer = $beers[$i];
 			if($tapOrBottle != ConfigNames::CONTAINER_TYPE_KEG  && !isset($beer) ) continue;
 		?>

@@ -120,16 +120,5 @@ abstract class ConfigNames
 	const AmountPerPint      = 'amountPerPint';
 	const NumAccoladeDisplay      = 'numAccoladeDisplay';
 	const ABVColorSRM      = 'ABVColorSRM';
-	const UpdateBatchWithKeg      = 'UpdateBatchWithKeg';
-	const RefreshTapList      = 'RefreshTapList';
-	const InfoTime      = 'InfoTime';
-	const ShowFermOnMainPage = 'showFermOnMainPage';
-	const ShowGTOnMainPage = 'showGTOnMainPage';
-	const ShowAllGTOnMainPage = 'showAllGTOnMainPage';
-	
-	const iSUpdateMinTemp = 'iSUpdateMinTemp';
-	const iSUpdateMaxTemp = 'iSUpdateMaxTemp';
-	const iSUpdateOG = 'iSUpdateOG';
-	const iSUpdateFG = 'iSUpdateFG';
 }
 ?>

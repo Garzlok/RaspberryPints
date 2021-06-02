@@ -1,18 +1,16 @@
 <?php
 session_start();
 if(!isset( $_SESSION['myusername'] )){
-    header("location:index.php?ret=".urlencode($_SERVER['REQUEST_URI']));
+	header("location:index.php");
 }
 require_once __DIR__.'/includes/conn.php';
 require_once __DIR__.'/includes/html_helper.php';
 require_once __DIR__.'/includes/functions.php';
 require_once __DIR__.'/includes/models/beer.php';
-require_once __DIR__.'/includes/models/beerBatch.php';
 require_once __DIR__.'/includes/models/bottle.php';
 require_once __DIR__.'/includes/models/brewery.php';
 require_once __DIR__.'/includes/managers/srm_manager.php';
 require_once __DIR__.'/includes/managers/beer_manager.php';
-require_once __DIR__.'/includes/managers/beerBatch_manager.php';
 require_once __DIR__.'/includes/managers/bottle_manager.php';
 require_once __DIR__.'/includes/managers/beerStyle_manager.php';
 require_once __DIR__.'/includes/managers/bottleType_manager.php';
@@ -20,9 +18,6 @@ require_once __DIR__.'/includes/managers/rfidReader_manager.php';
 require_once __DIR__.'/includes/managers/motionDetector_manager.php';
 require_once __DIR__.'/includes/managers/tempProbe_manager.php';
 require_once __DIR__.'/includes/managers/config_manager.php';
-require_once __DIR__.'/includes/managers/iSpindelConnector_manager.php';
-require_once __DIR__.'/includes/managers/iSpindelData_manager.php';
-require_once __DIR__.'/includes/managers/iSpindelDevice_manager.php';
 require_once 'includes/models/keg.php';
 require_once 'includes/models/kegType.php';
 require_once 'includes/models/kegStatus.php';
@@ -40,11 +35,10 @@ require_once __DIR__.'/includes/managers/tap_manager.php';
 <link href="styles/layout.css" rel="stylesheet" type="text/css" />
 <link href="styles/wysiwyg.css" rel="stylesheet" type="text/css" />
     <!-- Theme Start -->
-
-<link href="<?php /** @var mixed $stylesheet */echo $stylesheet?>" rel="stylesheet" type="text/css" />
+<link href="<?php echo $stylesheet?>" rel="stylesheet" type="text/css" />
     <!-- Theme End -->
 <link href='http://fonts.googleapis.com/css?family=Fredoka+One' rel='stylesheet' type='text/css'>
 <?php require __DIR__.'/scripts.php'; ?>
-<?php /** @var mixed $noHeadEnd */ if(!isset($noHeadEnd) || !$noHeadEnd){?>
+<?php if(!isset($noHeadEnd) || !$noHeadEnd){?>
 </head>
 <?php }?>

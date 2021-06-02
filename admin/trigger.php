@@ -9,13 +9,8 @@
 	$errno = 0;
 	$errstr = "";
 
-	$echoOn = false;
 	$received = "RPNAK";
-	/** @var mixed $value **/
-	if(!isset($value))	{
-	    $value = htmlspecialchars($_GET["value"]);
-	    $echoOn = true;
-	}
+	$value = htmlspecialchars($_GET["value"]);
 
 	$data = "";
 
@@ -37,7 +32,7 @@
 	} 
 	else 
 	{
-	    if( $echoOn )echo $received;
+		echo $received;
 		exit();
 	}
 	
@@ -46,6 +41,6 @@
     	fwrite($fp, $data);
     	$received = fread($fp, 1024);
     	fclose($fp);
-    	if( $echoOn )echo $received;
+    	echo $received;
     }
 ?>

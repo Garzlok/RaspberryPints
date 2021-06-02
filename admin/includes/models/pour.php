@@ -16,7 +16,6 @@ class Pour
 	private $_pinId;
 	private $_pulses;
 	private $_beerId;
-	private $_beerBatchId;
 	private $_conversion;
 	private $_userId;
 	
@@ -63,9 +62,6 @@ class Pour
 	
 	public function get_beerId(){ return $this->_beerId; } 
 	public function set_beerId($_beerId){ $this->_beerId = $_beerId; }
-	
-	public function get_beerBatchId(){ return $this->_beerBatchId; } 
-	public function set_beerBatchId($_beerBatchId){ $this->_beerBatchId = $_beerBatchId; }
 	
 	public function get_conversion(){ return $this->_conversion; } 
 	public function set_conversion($_conversion){ $this->_conversion = $_conversion; }
@@ -148,11 +144,6 @@ class Pour
 		else
 			$this->set_beerId(null);
 			
-		if( isset($postArr['beerBatchId']) )
-		    $this->set_beerBatchId($postArr['beerBatchId']);
-		else
-		    $this->set_beerBatchId(null);
-		
 		if( isset($postArr['conversion']) )
 			$this->set_conversion($postArr['conversion']);
 		else

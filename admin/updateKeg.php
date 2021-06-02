@@ -13,7 +13,6 @@ $tapManager = new TapManager();
 $kegManager = new KegManager();
 $beerManager = new BeerManager();
 $tap = new Tap();
-/** @var mixed $argv  **/
 if( isset($argv) && count($argv) >= 2 ){    
     //This will be used to choose between CSV or MYSQL DB
     $db = true;
@@ -42,7 +41,7 @@ if( isset($argv) && count($argv) >= 2 ){
                 $finalGravity = $beer->get_fg()?$beer->get_fg():'';
                 $finalGravityUnit = $beer->get_fgUnit()?$beer->get_fgUnit():'';
                 $vol = getVolumeByWeight($NEW_WEIGHT, $NEW_WEIGHT_UNIT, $keg->get_emptyWeight(), $keg->get_emptyWeightUnit(), $keggingTemperature, $keggingTemperatureUnit, $config[ConfigNames::BreweryAltitude], $config[ConfigNames::BreweryAltitudeUnit], $beerCO2PSI, $beerCO2PSIUnit, $finalGravity, $finalGravityUnit, $config[ConfigNames::DisplayUnitVolume]);
-    			if($vol && !is_nan($vol) && $vol < 100000){
+    			if($vol && !is_nan($vol)){
     			    $keg->set_currentAmount($vol);
         			// Refreshes connected pages
         			if(isset($config[ConfigNames::AutoRefreshLocal]) && $config[ConfigNames::AutoRefreshLocal]){
@@ -50,11 +49,7 @@ if( isset($argv) && count($argv) >= 2 ){
         			}
     			}
             }
-            if( !$kegManager->Save($keg) )
-            {
-                /** @var mixed $mysqli **/
-                echo "Could not update Weight for ".$keg->get_id()."(".$keg->get_label().")" . ($mysqli->error != ""?' ['.$mysqli->error.']':'')."\n" ;
-            }
+            $kegManager->Save($keg);
         }
     }    
 }
