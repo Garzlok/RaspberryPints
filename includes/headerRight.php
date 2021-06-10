@@ -115,7 +115,7 @@ if ($config[ConfigNames::ShowTempOnMainPage] && ($index == $tempIndex || $index 
     }
     if (isset($date) && isset($tempDisplay))
         $tempDisplay .= sprintf('%s', str_replace(' ', "<br/>", Manager::format_time($date)));
-    echo '<td class="HeaderRightSub" style="width:15%;text-align:right;vertical-align:middle">' . $tempDisplay . '</td>';
+    echo '<td class="HeaderRightSub">' . $tempDisplay . '</td>';
 }
 
 ?>
@@ -123,10 +123,10 @@ if ($config[ConfigNames::ShowTempOnMainPage] && ($index == $tempIndex || $index 
 <?php
 if (null !== $temp) {
 ?>
-		<td style="width:8%;border-left:none">
+		<td style="width:55%;border-left:none">
         <div class="temp-container">
         	<div class="temp-indicator">
-        		<div class="temp-full" style="height:<?php echo convert_temperature($temp, $tempUnit, UnitsOfMeasure::TemperatureFahrenheight); ?>%; padding-right: 50px"></div>
+        		<div class="temp-full" style="height:<?php echo convert_temperature($temp, $tempUnit, UnitsOfMeasure::TemperatureFahrenheight); ?>%; padding-right: 5px"></div>
         	</div>
         </div>
         </td>
@@ -135,7 +135,7 @@ if (null !== $temp) {
 if($config[ConfigNames::ShowLastPour] && ($index == $lastPourIndex || $index < 0)) {
 ?>
         		<td class="poursbeername" colspan="2">
-        			<h1 style="text-align: center">Last Pour</h1>
+        			<h1 style="font-size: 1.5em; text-align: left; text-shadow: 1.5px 1.5px 4px #000000;">Last Pour</h1>
         		</td>
         		</tr>
         		<tr>
@@ -146,14 +146,16 @@ if($config[ConfigNames::ShowLastPour] && ($index == $lastPourIndex || $index < 0
         if(null !== $pour) {?>
         <?php if($pour->get_userName()){?>
         		<td class="poursuser">
-        			<h1 style="font-size: 1em; text-align: right"><?php echo $pour->get_userName(); ?></h1>
+        			<h1 style="font-size: 1em; text-align: left"><?php echo $pour->get_userName(); ?></h1>
         		</td>
         		<?php }?>
         		<td class="poursbeername">
-        			<h1 style="font-size: 1em; text-align: right"><?php echo $pour->get_beerName(); ?></h1>
+        			<h1 style="font-size: 1em; text-align: center"><?php echo $pour->get_beerName(); ?></h1>
         		</td>
+				</tr>
         		<td class="poursamount">
-        			<h1><?php echo $pour->get_amountPouredDisplay(); ?></h1>
+        			<h1 style="font-size: 2em; text-align: left"><?php echo $pour->get_amountPouredDisplay(); ?>oz</h1>
+				<tr>
         		</td>
     	<?php } ?>
 <?php 
