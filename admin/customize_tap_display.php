@@ -18,7 +18,7 @@ html, body {
 	background-repeat:no-repeat;
 	overflow: visible;
 	color: #FFFFFF;
-	font: 1em Georgia, arial, verdana, sans-serif;
+	font: 1em Roboto, arial, verdana, sans-serif;
 	margin:0px;
 	height:unset;
 }
@@ -733,7 +733,7 @@ include 'left_bar.php';
 	<!-- End Left Bar Menu -->
 	<!-- Start Js  -->
 <?php
-//require_once 'scripts.php';
+//include 'scripts.php';
 ?>
 	<!--[if IE 6]>
 	<script type='text/javascript' src='scripts/png_fix.js'></script>
