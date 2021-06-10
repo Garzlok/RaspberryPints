@@ -797,7 +797,7 @@ class OneWireTemperatureThread (threading.Thread):
                     if temp != None and temp >= self.bound_lo and temp <= self.bound_hi:
                         pinState = None
                         if statePins[probeName] > 0:
-                            pinState = self.dispatch.readpin(MCP_PIN) 
+                            pinState = self.dispatch.readpin(statePins[probeName]) 
                         temps.append([probeName, temp, 'C', takenDate, pinState])
                         if probeName not in tempStatus:
                             debug("Adding " + probeName +" Temp[" + str(temp) + "] low:" + str(self.bound_lo) + " high:"+str(self.bound_hi) ) 
@@ -1095,8 +1095,8 @@ class iSpindelListenerThread (threading.Thread):
                         try:
                             debug(repr(addr) + ' - writing to database', debugConfig='iSpindel.debug')
                             # standard field definitions:
-                            fieldlist = ['createdDate', 'name', 'iSpindelId', 'angle', 'temperature', 'temperatureUnit', 'battery', 'gravity', 'gravityUnit', 'beerId', 'beerBatchId' ]
-                            valuelist = [datetime.datetime.now(), spindle_name, spindle_id, angle, temperature, temperatureUnit, battery, gravity, device["gravityUnit"], device["beerId"], device["beerBatchId"]]
+                            fieldlist = ['createdDate', 'name', 'iSpindelId', 'angle', 'temperature', 'temperatureUnit', 'battery', 'gravity', 'gravityUnit', 'beerId', 'beerBatchId','beerName' ]
+                            valuelist = [datetime.datetime.now(), spindle_name, spindle_id, angle, temperature, temperatureUnit, battery, gravity, device["gravityUnit"], device["beerId"], device["beerBatchId"],str(device["beerName"])]
             
                             # do we have a user token defined? (Fw > 5.4.x)
                             # this is for later use (public server) but if it exists, let's store it for testing purposes

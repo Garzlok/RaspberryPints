@@ -348,6 +348,9 @@ ALTER TABLE kegs CHANGE COLUMN `startAmount` `startAmount` decimal(10,5) NULL ;
 ALTER TABLE kegs CHANGE COLUMN `currentAmount` `currentAmount` decimal(10,5) NULL ;
 ALTER TABLE kegs CHANGE COLUMN `fermentationPSI` `fermentationPSI` decimal(14,2) NULL ;
 ALTER TABLE pours CHANGE COLUMN `amountPoured` `amountPoured` decimal(9,7) NULL ;
+ALTER TABLE pours CHANGE COLUMN `beerBatchId` `beerBatchId` int(11) NULL ;
+ALTER TABLE tapEvents CHANGE COLUMN `beerBatchId` `beerBatchId` int(11) NULL ;
+ALTER TABLE bottles CHANGE COLUMN `beerBatchId` `beerBatchId` int(11) NULL ;
 
 
 
@@ -1154,7 +1157,7 @@ select
             on((f.fermenterTypeId = ft.id)))
 	LEFT JOIN beers b ON b.id = f.beerId
 	LEFT JOIN beerBatches bb ON bb.id = f.beerBatchId
-	LEFT JOIN srmRgb s ON (bb.srm IS NULL AND s.srm = b.srm) OR (bb.srm IS NOT NULL AND s.srm = bb.srm)
+	LEFT JOIN srmRgb s ON (bb.srm IS NULL AND s.srm = b.srm) OR (bb.srm IS NOT NULL AND s.srm = bb.srm);
        
       
 CREATE OR REPLACE VIEW vwGetActiveTaps
@@ -1390,5 +1393,11 @@ ALTER TABLE beerStyles CHANGE COLUMN `ogMin` `ogMin` DECIMAL(7,3) NULL DEFAULT N
 ALTER TABLE beerStyles CHANGE COLUMN `ogMax` `ogMax` DECIMAL(7,3) NULL DEFAULT NULL ;
 ALTER TABLE beerStyles CHANGE COLUMN `fgMin` `fgMin` DECIMAL(7,3) NULL DEFAULT NULL ;
 ALTER TABLE beerStyles CHANGE COLUMN `fgMax` `fgMax` DECIMAL(7,3) NULL DEFAULT NULL ;
+
+#remove the show column parameters as those are no longer used
+UPDATE config c1 left join config c2 on trim(c2.configName) = concat('show',substring(c1.configName,1,length(c1.configName)-3)) OR (c1.configName = 'BeerInfoColNum' AND c2.configName = 'showBeerName')
+ SET c1.configValue=c1.configValue*(CASE WHEN c2.configValue = '0' THEN -1 ELSE 1 END)
+WHERE c1.configName like '%ColNum' and c2.configName IS NOT NULL and c2.showOnPanel = '1';
+UPDATE config SET showOnPanel='0', configValue='0' where configName like 'show%Col' or configName = 'showBeerName';
 
 UPDATE `config` SET `configValue` = '3.1.0.0' WHERE `configName` = 'version';

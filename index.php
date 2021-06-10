@@ -133,15 +133,17 @@
 				"ibu" => $b['ibu'],
 			    "volume" => $b['volume'],
 			    "volumeUnit" => $b['volumeUnit'],
-				"startAmount" => $b['startAmount'],
+			    "startAmount" => $b['startAmount'],
+			    "startAmountUnit" => 'Bottle',
 				"amountPoured" => $b['amountPoured'],
 				"remainAmount" => $b['remainAmount'],
+				"remainAmountUnit" => 'Bottle',
 				"capRgba" => $b['capRgba'],
 				"capNumber" => $b['capNumber'],
 				"rating" => $b['rating'],
 				"srmRgb" => $b['srmRgb'],
 			    "valvePinState" => $b['valvePinState'],
-			    "plaatoAuthToken" => $b['plaatoAuthToken'],
+			    "plaatoAuthToken" => '',
 			    "containerType" => $b['containerType'],
 			    "kegType" => $b['kegType'],
 				"accolades" => $b['accolades']
@@ -230,11 +232,11 @@
 					        //do nothing
 					        }
 						}
-					    if (strlen($config[ConfigNames::HeaderText]) > ($config[ConfigNames::HeaderTextTruncLen])) {
-							echo htmlentities(substr($config[ConfigNames::HeaderText],0,$config[ConfigNames::HeaderTextTruncLen]) . "...");
-						} else {
+// 					    if (strlen($config[ConfigNames::HeaderText]) > ($config[ConfigNames::HeaderTextTruncLen])) {
+// 							echo htmlentities(substr($config[ConfigNames::HeaderText],0,$config[ConfigNames::HeaderTextTruncLen]) . "...");
+// 						} else {
 							echo htmlentities($config[ConfigNames::HeaderText]);
-						}
+//						}
 						
 					?>
 				</div>

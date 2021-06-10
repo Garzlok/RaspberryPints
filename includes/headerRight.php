@@ -51,7 +51,7 @@ if( $config[ConfigNames::ShowGTOnMainPage]){
     $maxIndex += count($gasTanks);
     $gasTankEnd = $gasTankStart + count($gasTanks);
 }
-if(isset($_SESSION['HomePageIndex']))
+if(isset($_SESSION['HomePageIndex']) && $maxIndex > 0)
 {
     $_SESSION['HomePageIndex'] = (($_SESSION['HomePageIndex']+1)%$maxIndex);
     $index =  $_SESSION['HomePageIndex'];
@@ -114,7 +114,7 @@ if ($config[ConfigNames::ShowTempOnMainPage] && ($index == $tempIndex || $index 
         $tempDisplay .= sprintf('%s:%0.1f%s<br/>', $probe, convert_temperature($temp, $tempUnit, $config[ConfigNames::DisplayUnitTemperature]), $config[ConfigNames::DisplayUnitTemperature]);
     }
     if (isset($date) && isset($tempDisplay))
-        $tempDisplay .= sprintf('%s', str_replace(' ', "<br/>", $date));
+        $tempDisplay .= sprintf('%s', str_replace(' ', "<br/>", Manager::format_time($date)));
     echo '<td class="HeaderRightSub" style="width:15%;text-align:right;vertical-align:middle">' . $tempDisplay . '</td>';
 }
 
