@@ -87,7 +87,7 @@ if ($config[ConfigNames::ShowTempOnMainPage] && ($index == $tempIndex || $index 
                         if($config[ConfigNames::UsePlaatoTemp])
                         {
                             $tempInfo["tempUnit"] = (strpos($plaatoValue,"C")?UnitsOfMeasure::TemperatureCelsius:UnitsOfMeasure::TemperatureFahrenheight);
-                            $tempInfo["temp"] = substr($plaatoValue, 0, strpos($plaatoValue, '°'));
+                            $tempInfo["temp"] = substr($plaatoValue, 0, strpos($plaatoValue, 'Â°'));
                             $tempInfo["probe"] = $b['id'];
                             $tempInfo["takenDate"] = date('Y-m-d H:i:s');
                             array_push($plaatoTemps, $tempInfo);
@@ -128,7 +128,7 @@ if (null !== $temp) {
 		<td style="width:55%;border-left:none">
         <div class="temp-container">
         	<div class="temp-indicator">
-        		<div class="temp-full" style="height:<?php echo convert_temperature($temp, $tempUnit, UnitsOfMeasure::TemperatureFahrenheight); ?>%; padding-right: 5px"></div>
+        		<div class="temp-full" style="height:<?php echo convert_temperature($temp*.15, $tempUnit, UnitsOfMeasure::TemperatureFahrenheight); ?>%; padding-right: 5px"></div>
         	</div>
         </div>
         </td>
