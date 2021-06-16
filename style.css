@@ -226,7 +226,7 @@ img {
 }
 .HeaderRightSub{
 	display:table-cell;
-	font: .85em Roboto;
+	font: 1vw Roboto;
 	color: #FF6600;
 	font-weight: 400;
 	text-align: center;
@@ -505,7 +505,7 @@ background-color: rgba(245,242,232,.3);
 border: 2px #FFCC00 solid;
 border-radius: 1em;
 color: #F5F2E8;
-font: .52em Helvetica;
+font: 1vw Helvetica;
 text-shadow: 0px 0px white;
 display:flex;
 justify-content: center;
