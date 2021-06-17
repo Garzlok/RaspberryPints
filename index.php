@@ -18,7 +18,7 @@
 	require_once __DIR__.'/admin/includes/managers/bottle_manager.php';
 	require_once __DIR__.'/admin/includes/managers/pour_manager.php';
 
-		
+
 	$plaatoPins = array(
 	    "style" => 'v64',
 	    "abv" => 'v68',
@@ -31,24 +31,24 @@
 	$plaatoTemps = array();
 	//This can be used to choose between CSV or MYSQL DB
 	$db = true;
-	
+
 	// Setup array for all the beers that will be contained in the list
 	$taps = array();
 	$bottles = array();
-	
+
 	if($db){
 		// Connect to the database
-		$mysqli = db();		
+		$mysqli = db();
 		$config = getAllConfigs();
-		
+
 		$sql =  "SELECT * FROM vwGetActiveTaps";
 		$qry = $mysqli->query($sql);
 		while($b = mysqli_fetch_array($qry))
 		{
 			$beeritem = array(
 				"id" => $b['id'],
-			    "beerId" => $b['beerId'],
-			    "beerBatchId" => $b['beerBatchId'],
+				"beerId" => $b['beerId'],
+				"beerBatchId" => $b['beerBatchId'],
 				"beername" => $b['name'],
 				"untID" => $b['untID'],
 				"style" => $b['style'],
@@ -88,7 +88,7 @@
     			            if($config[ConfigNames::UsePlaatoTemp])
     			            {
     			                $tempInfo["tempUnit"] = (strpos($plaatoValue,"C")?UnitsOfMeasure::TemperatureCelsius:UnitsOfMeasure::TemperatureFahrenheight);
-    			                $tempInfo["temp"] = substr($plaatoValue, 0, strpos($plaatoValue, '°'));
+    			                $tempInfo["temp"] = substr($plaatoValue, 0, strpos($plaatoValue, 'Â°'));
     			                $tempInfo["probe"] = $b['id'];
     			                $tempInfo["takenDate"] = date('Y-m-d H:i:s');
     			                array_push($plaatoTemps, $tempInfo);
@@ -98,14 +98,14 @@
         			        if( $plaatoValue !== NULL && $plaatoValue != '') $beeritem[$value] = $plaatoValue;
     			            //echo $value."=http://plaato.blynk.cc/".$b['plaatoAuthToken']."/get/".$pin."-".$beeritem[$value].'-'.$plaatoValue.'<br/>';
         			    }
-    			        
+
     			    }
     			}
 			}
 			$taps[$b['id']] = $beeritem;
 		}
-		
-		
+
+
 		$tapManager = new TapManager();
 		$numberOfTaps = $tapManager->getNumberOfTaps();
 
@@ -116,8 +116,8 @@
 		{
 			$beeritem = array(
 				"id" => $b['id'],
-			    "beerId" => $b['beerId'],
-			    "beerBatchId" => $b['beerBatchId'],
+				"beerId" => $b['beerId'],
+				"beerBatchId" => $b['beerBatchId'],
 				"beername" => $b['name'],
 				"untID" => $b['untID'],
 				"style" => $b['style'],
@@ -133,8 +133,8 @@
 				"ibu" => $b['ibu'],
 			    "volume" => $b['volume'],
 			    "volumeUnit" => $b['volumeUnit'],
-			    "startAmount" => $b['startAmount'],
-			    "startAmountUnit" => 'Bottle',
+				"startAmount" => $b['startAmount'],
+				"startAmountUnit" => 'Bottle',
 				"amountPoured" => $b['amountPoured'],
 				"remainAmount" => $b['remainAmount'],
 				"remainAmountUnit" => 'Bottle',
@@ -143,7 +143,7 @@
 				"rating" => $b['rating'],
 				"srmRgb" => $b['srmRgb'],
 			    "valvePinState" => $b['valvePinState'],
-			    "plaatoAuthToken" => '',
+			    "plaatoAuthToken" => $b['plaatoAuthToken'],
 			    "containerType" => $b['containerType'],
 			    "kegType" => $b['kegType'],
 				"accolades" => $b['accolades']
@@ -154,7 +154,7 @@
 		$bottleManager = new BottleManager();
     	//$bottleManager->UpdateCounts();
 		$numberOfBottles = $bottleManager->getCount();
-		
+
 		$numberOfPours = 0;
 		if($config[ConfigNames::ShowPourListOnHome]){
     		$poursManager = new PourManager();
@@ -165,64 +165,92 @@
     		$numberOfPours = count($poursList);
 		}
 	}
-		
+
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 	<head>
-		<title>RaspberryPints</title>
+		<title>Gierlach's Peak RaspberryPints</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<!-- Set location of Cascading Style Sheet -->
 		<link rel="stylesheet" type="text/css" href="style.css">
-		
+
 		<?php if($config[ConfigNames::UseHighResolution]) { ?>
 			<link rel="stylesheet" type="text/css" href="style-high-res.css">
 		<?php } ?>
-		
-		<?php	
+
+		<?php
 		if(! empty($_SERVER['HTTP_USER_AGENT'])){
     		$useragent = $_SERVER['HTTP_USER_AGENT'];
     		if( preg_match('@(Android)@', $useragent) ){ ?>
 			<link rel="stylesheet" type="text/css" href="style-aftv.css">
-    	<?php	    
+    	<?php
     		}
 		} ?>
-		
+
 		<link rel="shortcut icon" href="img/pint.ico">
-<!-- <meta name="viewport" content="initial-scale=0.7,width=device-width,height=device-height,target-densitydpi=device-dpi,user-scalable=yes" />  -->		
-		<script type="text/javascript" src="admin/scripts/ws.js"></script>	
-		<script type="text/javascript">
-			function toggleFullScreen() {
-        	  var doc = window.document;
-        	  var docEl = doc.documentElement;
 
-        	  var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
-        	  var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+		<meta name="apple-mobile-web-app-capable" content="yes">
 
-        	  if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
-        	    requestFullScreen.call(docEl);
-        	  }
-        	  else {
-        	    cancelFullScreen.call(doc);
-        	  }
-        	}
+		<link href="apple-touch-icon.png" rel="apple-touch-icon" />
+        <link href="icon-hires.png" rel="icon-hires" />
+
+        <script type="text/javascript">
+        if(("standalone" in window.navigator) && window.navigator.standalone){
+        var noddy, remotes = false;
+        document.addEventListener('click', function(event) {
+        noddy = event.target;
+        while(noddy.nodeName !== "A" && noddy.nodeName !== "HTML") {
+        noddy = noddy.parentNode;
+        }
+        if('href' in noddy && noddy.href.indexOf('http') !== -1 && (noddy.href.indexOf(document.location.host) !== -1 || remotes))
+        {
+        event.preventDefault();
+        document.location.href = noddy.href;
+        }
+        },false);
+        }
         </script>
-	</head> 
+
+<!-- <meta name="viewport" content="initial-scale=0.7,width=device-width,height=device-height,target-densitydpi=device-dpi,user-scalable=yes" />  -->
+		<script type="text/javascript" src="admin/scripts/ws.js"></script>
+    <script type="text/javascript">
+        function toggleFullScreen() {
+             var doc = window.document;
+              var docEl = doc.documentElement;
+
+              var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+              var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+             if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+                requestFullScreen.call(docEl);
+              }
+              else {
+               cancelFullScreen.call(doc);
+             }
+           }
+         </script>  
+	</head>
 
 <!--<body> -->
-<body onload="wsconnect(); <?php if($config[ConfigNames::RefreshTapList])echo "setTimeout(function(){window.location.reload(1);}, 60000);"; ?>">
+<body onload="wsconnect(); <?php if($config[ConfigNames::RefreshTapList])echo "setTimeout(function(){window.location.reload(1);}, 900000);"; ?>">
 		<div class="bodywrapper" id="mainTable">
 			<!-- Header with Brewery Logo and Project Name -->
 			<div class="header clearfix">
 				<div class="HeaderLeft">
-					<?php if($config[ConfigNames::UseHighResolution]) { ?>			
+					<?php if($config[ConfigNames::UseHighResolution]) { ?>
 						<a href="admin/admin.php"><img src="<?php echo $config[ConfigNames::LogoUrl] . "?" . time(); ?>" height="200" alt=""></a>
 					<?php } else { ?>
-						<a href="admin/admin.php"><img src="<?php echo $config[ConfigNames::LogoUrl] . "?" . time(); ?>" height="100" alt=""></a>
+						<a href="admin/admin.php"><img src="<?php echo $config[ConfigNames::LogoUrl] . "?" . time(); ?>" height="150" alt=""></a>
 					<?php } ?>
 				</div>
 				<div class="HeaderCenter" onClick="toggleFullScreen()">
 					<?php
+					if (strlen($config[ConfigNames::HeaderText]) > ($config[ConfigNames::HeaderTextTruncLen])) {
+							echo htmlentities(substr($config[ConfigNames::HeaderText],0,$config[ConfigNames::HeaderTextTruncLen]) . "...");
+						} else {
+							echo htmlentities($config[ConfigNames::HeaderText]);
+						}
 					if( $config[ConfigNames::ShowUntappdBreweryFeed] &&
 					    !empty($config[ConfigNames::BreweryID]) ){
 					        try{
@@ -231,22 +259,16 @@
 					        }catch(Exception $e){
 					        //do nothing
 					        }
-						}
-// 					    if (strlen($config[ConfigNames::HeaderText]) > ($config[ConfigNames::HeaderTextTruncLen])) {
-// 							echo htmlentities(substr($config[ConfigNames::HeaderText],0,$config[ConfigNames::HeaderTextTruncLen]) . "...");
-// 						} else {
-							echo htmlentities($config[ConfigNames::HeaderText]);
-//						}
-						
+						}	
 					?>
 				</div>
-          		<div class="HeaderRight" id="HeaderRight" style="vertical-align:top">
+           		<div class="HeaderRight" id="HeaderRight" style="vertical-align:middle">
           		<?php include_once 'includes/headerRight.php';?>
           		</div>
 			</div>
 			<!-- End Header Bar -->
 			
-			<?php 
+			<?php
 			    if($numberOfTaps > 0 && $numberOfBottles > 0) echo "<h1 style=\"text-align: center;\">Taps</h1>";
 				if($numberOfTaps > 0)printBeerList($taps, $numberOfTaps, ConfigNames::CONTAINER_TYPE_KEG);
 			    if($numberOfTaps > 0 && $numberOfBottles > 0) echo "<h1 style=\"text-align: center;\">Bottles</h1>";
@@ -254,17 +276,17 @@
 			    if($numberOfPours > 0) echo "<h1 style=\"text-align: center;\">Pours</h1>";
 				if($numberOfPours > 0) printPoursList($poursList);
 			?>
+			<div class="copyright">Feeds provided by: <a href="https://untappd.com" style="color:#FFCC00;">UNTAPPD</a> for Gierlach's Peak Brewing Co.</div>
 		</div>
-		<div class="copyright">Data provided by <a href="http://untappd.com">Untappd</a></div>
-	<script type="text/javascript" src="admin/js/enhance.js"></script>	
-	<script type='text/javascript' src='admin/js/excanvas.js'></script>
-	<script type='text/javascript' src='admin/js/jquery-1.11.0.min.js'></script>
-	<script type='text/javascript' src='admin/js/jquery-ui.js'></script>
-	<script type='text/javascript' src='admin/js/jquery.validate.js'></script>
-	<script type='text/javascript' src='admin/scripts/jquery.wysiwyg.js'></script>
-	<script type='text/javascript' src='admin/scripts/visualize.jQuery.js'></script>
-	<script type="text/javascript" src='admin/scripts/functions.js'></script>	
-	<script type="text/javascript" src='admin/scripts/jscolor.js'></script>	
+		<script type="text/javascript" src="admin/js/enhance.js"></script>	
+		<script type='text/javascript' src='admin/js/excanvas.js'></script>
+		<script type='text/javascript' src='admin/js/jquery-1.11.0.min.js'></script>
+		<script type='text/javascript' src='admin/js/jquery-ui.js'></script>
+		<script type='text/javascript' src='admin/js/jquery.validate.js'></script>
+		<script type='text/javascript' src='admin/scripts/jquery.wysiwyg.js'></script>
+		<script type='text/javascript' src='admin/scripts/visualize.jQuery.js'></script>
+		<script type="text/javascript" src='admin/scripts/functions.js'></script>	
+		<script type="text/javascript" src='admin/scripts/jscolor.js'></script>
 		<script type="text/javascript">
 		
 		function loadHeaderRight()

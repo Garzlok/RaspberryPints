@@ -42,6 +42,7 @@ if( isset($_GET['tapId'])){
 			$PIN = $argv[$ii++];
 			$PULSE_COUNT = $argv[$ii++];
 			//$userId = '';
+			if( $RFID == -1) $RFID =1;
 			$pourManager->pour($RFID, $PIN, $PULSE_COUNT);
 			
 		}else if($type == 'Kick'){
