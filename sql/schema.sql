@@ -251,7 +251,6 @@ INSERT INTO `beerStyles`( name, catNum, category, beerStyleList, ogMin, ogMax, f
 ( 'Specialty IPA: Red IPA', '21B', 'IPA', 'BJCP 2015', '1.056', '1.070', '1.008', '1.016', '5.5', '7.5', '40', '70', '11', '19', NOW(), NOW() ),
 ( 'Specialty IPA: Rye IPA', '21B', 'IPA', 'BJCP 2015', '1.056', '1.075', '1.008', '1.014', '5.5', '8.0', '50', '75', '6', '14', NOW(), NOW() ),
 ( 'Specialty IPA: White IPA', '21B', 'IPA', 'BJCP 2015', '1.056', '1.065', '1.010', '1.016', '5.5', '7.0', '40', '70', '5', '8', NOW(), NOW() ),
-( 'Specialty IPA: NEIPA', '21B', 'IPA', 'BJCP 2015', '1.060', '1.085', '1.010', '1.015', '6.0', '9.0', '25', '60', '3', '7', NOW(), NOW() ),
 ( 'Double IPA', '22A', 'Strong American Ale', 'BJCP 2015', '1.065', '1.085', '1.008', '1.018', '7.5', '10', '60', '120', '6', '14', NOW(), NOW() ),
 ( 'American Strong Ale', '22B', 'Strong American Ale', 'BJCP 2015', '1.062', '1.090', '1.014', '1.024', '6.3', '10', '50', '100', '7', '19', NOW(), NOW() ),
 ( 'American Barleywine', '22C', 'Strong American Ale', 'BJCP 2015', '1.08', '1.12', '1.016', '1.03', '8', '12', '50', '100', '10', '19', NOW(), NOW() ),
