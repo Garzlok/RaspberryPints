@@ -6,7 +6,7 @@ require_once __DIR__.'/Pintlabs/Service/Untappd.php';
 function utBreweryFeed($config, $breweryId) {
 	
     if(!isset($breweryId))return;
-    $cachefile = __DIR__."/cache/bfeed";
+	$cachefile = __DIR__."/cache/bfeed";
 	$filetimemod = 0;
 	if(file_exists($cachefile)) {
 		$filetimemod = filemtime($cachefile)+600;
@@ -19,28 +19,29 @@ function utBreweryFeed($config, $breweryId) {
 		$ut = new Pintlabs_Service_Untappd($config);
 		$bfeed = $ut->breweryFeed($breweryId, '', '', 3)->response->checkins;
 	
-		$bfeeds ="<table width=95%><tr>";
-
+		$bfeeds .="<table width=95%><tr>";
 		foreach ($bfeed->items as $i) {
+			
 			
 			//$j = $i->beer->beer_name;
 			$bfeeds .="<td width=20%><table width=95%><tr><td><div class='beerfeed'>";
-			$bfeeds .="<center><div class=circular style='width: 49px;height: 49px;background-image: url(". $i->user->user_avatar ."); background-size: cover;border: 2px #FFCC00 solid; border-radius: 100px; margin: 1px;float: left;'></div>";
+			$bfeeds .="<center><div class=circular style='width: 49px;height: 49px;background-image: url(". $i->user->user_avatar ."); background-size: cover; border: 2px #FFCC00 solid; border-radius: 100px; margin: 1px;float: left'></div>";
 			$bfeeds .="<center><div class=circular style='width: 49px;height: 49px;background-image: url(". $i->beer->beer_label .");background-size: cover; display: block; border: 2px #FFCC00 solid; border-radius: 100px; margin: 1px; float: right'></div>";
-			
+
 			// $bfeeds .="".$i->user->user_name."<br />";
-			
+					
 			$bfeeds .="".$i->user->first_name." ";
-			$bfeeds .="".$i->user->last_name." is drinking a <br />";
+			$bfeeds .="".$i->user->last_name." is drinking a ";
 			
 			$bfeeds .="".$i->beer->beer_name." <br />";
 			
 			$bfeeds .="by ".$i->brewery->brewery_name."";
-			
 
+
+				
 			$bfeeds .="</td></tr></table>";
 			$bfeeds .="</div></td>";
-		 
+
 	}
 
 		$bfeeds .="</tr></table>";
@@ -68,13 +69,12 @@ function beerRATING($config, $untID, $rating=NULL, $displayOnly=TRUE ) {
     	$cachefile = __DIR__."/cache/rating/".$untID."";
     	
     	$filetimemod = 0;
-    	if(file_exists($cachefile) && filesize($cachefile) > 0) {
+    	if(file_exists($cachefile)) {
     	    $filetimemod = filemtime($cachefile)+86400;
     	}
     	//If display then only use the cache file otherwise we are saving the beer and want to update the cache
     	if ($displayOnly && $filetimemod > 0) {
     		include $cachefile;
-    		return;
     	} elseif($filetimemod == 0 || time()<$filetimemod){
     	    $img = "";
     		ob_start();
