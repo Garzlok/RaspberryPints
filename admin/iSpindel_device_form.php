@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
     $iSpindelDevice->set_sent($iSpindelDevice->get_sent() || $iSpindelDevice->get_interval() != $_POST["interval"] || $iSpindelDevice->get_token() != $_POST["token"] || $iSpindelDevice->get_polynomial() != $_POST["polynomal"] );
     $iSpindelDevice->setFromArray($_POST);
     if($iSpindelDeviceManager->Save($iSpindelDevice)){
+        triggerPythonAction();
         unset($_POST);
         redirect('iSpindel_device_list.php');
     }
@@ -388,6 +389,12 @@ include 'left_bar.php';
 ?>
 	<!-- End Left Bar Menu -->
 	<!-- Start Js  -->
+	<script type="text/javascript">
+function toggleVisibility(btn, row)
+{
+	$("[id*="+row+"]").toggle();
+}
+	</script>
 <?php
 require_once 'scripts.php';
 ?>

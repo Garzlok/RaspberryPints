@@ -603,7 +603,6 @@ INSERT INTO `config` ( configName, configValue, displayName, showOnPanel, create
 ( 'showSrmValue', '1', 'Show SRM Value', '1', NOW(), NOW() ),
 ( 'showBuGuValue', '1', 'Show BU:GU Value', '1', NOW(), NOW() ),
 ( 'showIbuValue', '1', 'Show IBU Value', '1', NOW(), NOW() ),
-( 'showAccoladeCol', '0', 'Show Accolades Col', '1', NOW(), NOW() ),
 ( 'showBeerName', '1', 'Show Beer Name', '1', NOW(), NOW() ),
 ( 'showBeerRating', '1', 'Show Beer Rating', '1', NOW(), NOW() ),
 ( 'showBeerStyle', '1', 'Show Beer Style', '1', NOW(), NOW() ),
@@ -649,9 +648,11 @@ INSERT INTO `config` ( configName, configValue, displayName, showOnPanel, create
 ( 'defaultKeggingTemp', '56', 'Default Temperature of beer when kegging', '0', NOW(), NOW() ),
 ( 'defaultKeggingTempUnit', 'F', 'Default Temperature Unit of beer when kegging', '0', NOW(), NOW() ),
 ( 'allowSamplePour', '1', 'Allow Sample Pour from List', '1', NOW(), NOW() ),
+( 'samplePourSize', '0', 'Size of sample Pour', '0', NOW(), NOW() ),
 ( 'saveNonUserRfids', '1', 'If unknown RFID tags should be saved into the database', '1', NOW(), NOW() ),
 ( 'showPourListOnHome', '1', 'Show list of pours on home screen', '1', NOW(), NOW() ),
-( 'ABVColorSRM', '1', 'Use beers SRM color to fill in the ABV indicator', '1', NOW(), NOW() );
+( 'ABVColorSRM', '1', 'Use beers SRM color to fill in the ABV indicator', '1', NOW(), NOW() ),
+( 'ignorePours', '0', 'Do not save pours to the database', '1', NOW(), NOW() );
 
 INSERT INTO `config` (`configName`, `configValue`, `displayName`, `showOnPanel`, `createdDate`, `modifiedDate`) VALUES
 ('autoKickKegs', '1', 'Kick Kegs from Tap when kill is detected', 1, NOW(), NOW() ),

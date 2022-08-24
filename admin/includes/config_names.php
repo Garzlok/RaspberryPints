@@ -78,7 +78,6 @@ abstract class ConfigNames
 	const ShowTapNumCol = 'showTapNumCol';
 	const TapNumColNum = 'TapNumColNum';
 	const ShowTastingNotes = 'showTastingNotes';
-	const ShowAccoladeCol = 'showAccoladeCol';
 	const AccoladeColNum = 'AccoladeColNum';
 	const UseFanControl = 'useFanControl';
 	const UseFanPin = 'useFanPin';
@@ -110,6 +109,7 @@ abstract class ConfigNames
 	const TempProbeBoundHigh = 'tempProbeBoundHigh';
 	const ShowTempOnMainPage = 'showTempOnMainPage';
 	const AllowSamplePour = 'allowSamplePour';
+	const SamplePourSize = 'samplePourSize';
 	const RestartFanAfterPour = 'restartFanAfterPour';
 	const DefaultRowsPerPage = 'DefaultRowsPerPage';
 	const DisplayUnitVolume      = 'displayUnitVolume';
@@ -135,5 +135,7 @@ abstract class ConfigNames
 	const iSUpdateMaxTemp = 'iSUpdateMaxTemp';
 	const iSUpdateOG = 'iSUpdateOG';
 	const iSUpdateFG = 'iSUpdateFG';
+	
+	const IgnorePours = 'ignorePours';
 }
 ?>
