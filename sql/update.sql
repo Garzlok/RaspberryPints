@@ -458,11 +458,10 @@ INSERT IGNORE INTO accolades (id, name, type, srm, notes, createdDate, modifiedD
 UPDATE accolades SET rank = id WHERE rank IS NULL;
 
 INSERT IGNORE INTO `config` ( configName, configValue, displayName, showOnPanel, createdDate, modifiedDate ) VALUES
-( 'showAccoladeCol', '0', 'Show Accolades Col', '1', NOW(), NOW() ),
 ('AccoladeColNum', '7', 'Column number for Accolades', 0, NOW(), NOW() );
 INSERT IGNORE INTO `config` ( configName, configValue, displayName, showOnPanel, createdDate, modifiedDate ) VALUES
 ('numAccoladeDisplay', '3', 'Number of Accolades to display in a row/column', 0, NOW(), NOW() );
-
+DELETE FROM `config` WHERE configName = 'showAccoladeCol';
 
 CREATE TABLE IF NOT EXISTS `containerTypes` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1433,8 +1432,10 @@ AS
 INSERT IGNORE INTO `config` (`configName`, `configValue`, `displayName`, `showOnPanel`, `validation`, `createdDate`, `modifiedDate`) VALUES
 ( 'maxPourAmount', '100', 'Maximum Amount allowed to be poured', '0', 'number:1-999', NOW(), NOW() );
 
+INSERT IGNORE INTO `config` (`configName`, `configValue`, `displayName`, `showOnPanel`, `validation`, `createdDate`, `modifiedDate`) VALUES
+( 'ignorePours', '0', 'Do not save pours to the database', '1', NULL, NOW(), NOW() );
 
-INSERT INTO `beerStyles`( name, catNum, category, beerStyleList, ogMin, ogMax, fgMin, fgMax, abvMin, abvMax, ibuMin, ibuMax, srmMin, srmMax, createdDate, modifiedDate ) VALUES
+INSERT IGNORE INTO `beerStyles`( name, catNum, category, beerStyleList, ogMin, ogMax, fgMin, fgMax, abvMin, abvMax, ibuMin, ibuMax, srmMin, srmMax, createdDate, modifiedDate ) VALUES
 -- BJCP 2021 styles
 ( 'American Light Lager', '1A', 'Standard American Beer', 'BJCP 2021', '1.028', '1.04', '0.998', '1.008', '2.8', '4.2', '8', '12', '2', '3', NOW(), NOW() ),
 ( 'American Lager', '1B', 'Standard American Beer', 'BJCP 2021', '1.04', '1.05', '1.004', '1.01', '4.2', '5.3', '8', '18', '2', '3.5', NOW(), NOW() ),
@@ -1585,5 +1586,7 @@ INSERT INTO `beerStyles`( name, catNum, category, beerStyleList, ogMin, ogMax, f
 ( 'Specialty Cider/Perry', 'C2F', 'Specialty Cider and Perry', 'BJCP 2015', '1.045', '1.100', '0.995', '1.020', '5', '12', '0', '0', '0', '0', NOW(), NOW() );
 
 
+INSERT IGNORE INTO `config` (`configName`, `configValue`, `displayName`, `showOnPanel`, `createdDate`, `modifiedDate`) VALUES
+( 'samplePourSize', '0', 'Size of sample Pour', '0', NOW(), NOW() );
 
 UPDATE `config` SET `configValue` = '3.1.0.0' WHERE `configName` = 'version';

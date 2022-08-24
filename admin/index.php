@@ -27,12 +27,12 @@
 					?>
 					<?php 
 					$refer = null;
-					if( null !== $_GET['ret'] && !empty($_GET['ret']) && strpos($_GET['ret'], 'http') === false && 
+					if( isset($_GET['ret']) && null !== $_GET['ret'] && !empty($_GET['ret']) && strpos($_GET['ret'], 'http') === false && 
 					    strpos($_GET['ret'], 'www.') === false && strpos($_GET['ret'], 'admin.php') === false )
 					{
 					    $refer = $_GET['ret'];
 					}
-					else if($_SERVER['HTTP_REFERER'] && !strpos($_SERVER['HTTP_REFERER'], "checklogin"))
+					else if(isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] && !strpos($_SERVER['HTTP_REFERER'], "checklogin"))
 					{
 					    $refer = $_SERVER['HTTP_REFERER'];
 					}
