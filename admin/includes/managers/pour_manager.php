@@ -3,6 +3,7 @@ require_once __DIR__.'/config_manager.php';
 require_once __DIR__.'/tap_manager.php';
 require_once __DIR__.'/keg_manager.php';
 require_once __DIR__.'/beer_manager.php';
+require_once __DIR__.'/beerBatch_manager.php';
 require_once __DIR__.'/user_manager.php';
 require_once __DIR__.'/manager.php';
 require_once __DIR__.'/../models/pour.php';
@@ -235,7 +236,7 @@ class PourManager extends Manager{
 		// Sets the amount to be a fraction of a gallon/Liter
 		$amount = 0;
 		if( $pourCountConversion > 0 ) {
-		    $amount = $PULSE_COUNT / $pourCountConversion;
+		    $amount = intval($PULSE_COUNT) / $pourCountConversion;
 		}else{
 		    echo "pours.php: No Count Per ".is_unit_imperial($tap->get_countUnit())?"Gallon":"Liter"." Configured for pin " .$PIN. " Please update from Admin->Taps\n";
 		}
@@ -306,7 +307,7 @@ class PourManager extends Manager{
 	}	
 	
 	function pourSample($tapId){
-		//$config = getAllConfigs();	
+		$config = getAllConfigs();	
 		$tapManager = new TapManager();
 		$kegManager = new KegManager();
 		
@@ -322,13 +323,26 @@ class PourManager extends Manager{
 		if($keg) $beerBatchId = $keg->get_beerBatchId();
 		$pourCountConversion = $tap->get_count();
 		
-		// Sets the amount to be a fraction of a gallon/liter
-		if( is_unit_imperial($tap->get_countUnit()) ){
-		  $amount = 1/128; //1/128 gallon = 1 oz
-		  $amountUnit = UnitsOfMeasure::VolumeGallon;
-		}else{
-		    $amount = 30/1000; //ml
-		    $amountUnit = UnitsOfMeasure::VolumeLiter;
+		if( !isset($config[ConfigNames::SamplePourSize]) ||
+		    $config[ConfigNames::SamplePourSize] == 0 )
+		{
+    		// Sets the amount to be a fraction of a gallon/liter
+    		if( is_unit_imperial($tap->get_countUnit()) ){
+    		  $amount = 1/128; //1/128 gallon = 1 oz
+    		  $amountUnit = UnitsOfMeasure::VolumeGallon;
+    		}else{
+    		    $amount = 30/1000; //ml
+    		    $amountUnit = UnitsOfMeasure::VolumeLiter;
+    		}
+		}
+		elseif ($config[ConfigNames::SamplePourSize] == -1)
+		{
+		
+		}
+		else 
+		{
+		    $amount = $config[ConfigNames::SamplePourSize]/(is_unit_imperial($tap->get_countUnit())?128:1000);
+		    $amountUnit = (is_unit_imperial($tap->get_countUnit())?UnitsOfMeasure::VolumeGallon:UnitsOfMeasure::VolumeLiter);
 		}
 		echo "pour on tap: " . $tap->get_tapNumber() . ", count: " . 'Sample' . 
 		     ", conversion: " . $pourCountConversion . 
