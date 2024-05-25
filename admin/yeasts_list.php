@@ -203,15 +203,19 @@ require_once 'scripts.php';
         	var valid = true;
         	$("form#"+form.id+" :input").each(function(){
     		 	var input = $(this)[0];
-    		 	if( input.name.match("minTemp.*") ||
-    	 			input.name.match("maxTemp.*") ||
-    	 			input.name.match("minAttenuation.*") ||
-    	 			input.name.match("maxAttenuation.*") ||
-    	 			input.name.match("flocculation.*") ){
+    		 	if( /minTemp[0-9]+/.test(input.id) ||
+		 			/maxTemp[0-9]+/.test(input.id) ||
+    	 			/minAttenuation[0-9]+/.test(input.id) ||
+    	 			/maxAttenuation[0-9]+/.test(input.id) ||
+    	 			/flocculation[0-9]+/.test(input.id) ){
             		if(!isNumeric(input.value)){
             			addInputError(input);
             			valid = false;
             		}
+            		else
+            		{
+            			clearInputError(input);
+            		}				
     		 	}
     		});
 
