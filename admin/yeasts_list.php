@@ -93,7 +93,7 @@ include 'top_menu.php';
             <br>
             <?php } ?>
 
-			<form method="POST" id="editForm" onsubmit="return validate(this);">
+			<form method="POST" id="editForm" onsubmit='return validate(this);'>
                 <table style="width:800px" id="tableList">
                 	<thead>
                         <tr>
