@@ -273,31 +273,28 @@ class FlowMonitor(object):
             configMD = self.dispatch.getMotionDetectors()
             for item in configMD:
                 if (item["type"] == 0):
-                    detector = MotionDetectionPIRThread( "MD-" + str(item["name"]), dispatch=self.dispatch, pirPin=int(item["pin"]), 
-                                                        soundFile=str(item["soundFile"]), ledPin=int(item["ledPin"] or 0),
-                                                        mqttCommand=str(item["mqttCommand"]), mqttEvent=str(item["mqttEvent"]), mqttUser=str(item["mqttUser"]), 
-                                                        mqttPass=str(item["mqttPass"]), mqttHost=str(item["mqttHost"]), mqttPort=item["mqttPort"], mqttInterval=int(item["mqttInterval"] or 0) )
+                    detector = MotionDetectionPIRThread( "MD-" + str(item["name"]), pirPin=int(item["pin"]) )
                     detector.start()
                     self.motionDetectors.append(detector)
                     
-        self.loadCellThreads = []
-        configLC = self.dispatch.getLoadCellConfig()
-        for item in configLC:
-            loadCell = LoadCellCheckThread( "LC-" + str(item["tapId"]), updateDir=config['pints.dir'], 
-                                            dispatch=self.dispatch, tapId=item["tapId"], commandPin=item["loadCellCmdPin"], 
-                                            responsePin=item["loadCellRspPin"], unit=item["loadCellUnit"], logger=log.logger,
-                                            scaleRatio=item["loadCellScaleRatio"], tareOffset=item["loadCellTareOffset"], updateVariance=item["loadCellUpdateVariance"] )
-            loadCell.start()
-            self.loadCellThreads.append(loadCell)
-        
-        configLC = self.dispatch.getGasTankLoadCellConfig()
-        for item in configLC:
-            loadCell = LoadCellCheckThread( "LC-" + str(item["id"]), updateDir=config['pints.dir'], 
-                                            dispatch=self.dispatch, tapId=item["id"], commandPin=item["loadCellCmdPin"], 
-                                            responsePin=item["loadCellRspPin"], unit=item["loadCellUnit"], logger=log.logger,
-                                            scaleRatio=item["loadCellScaleRatio"], tareOffset=item["loadCellTareOffset"], updateVariance=item["loadCellUpdateVariance"], equipType=LOAD_CELL_EQUIP_TYPE_GT )
-            loadCell.start()
-            self.loadCellThreads.append(loadCell)
+            self.loadCellThreads = []
+            configMD = self.dispatch.getLoadCellConfig()
+            for item in configMD:
+                loadCell = LoadCellCheckThread( "LC-" + str(item["tapId"]), updateDir=config['pints.dir'], 
+                                                dispatch=self.dispatch, tapId=item["tapId"], commandPin=item["loadCellCmdPin"], 
+                                                responsePin=item["loadCellRspPin"], unit=item["loadCellUnit"], logger=log.logger,
+                                                scaleRatio=item["loadCellScaleRatio"], tareOffset=item["loadCellTareOffset"] )
+                loadCell.start()
+                self.loadCellThreads.append(loadCell)
+            
+            configMD = self.dispatch.getGasTankLoadCellConfig()
+            for item in configMD:
+                loadCell = LoadCellCheckThread( "LC-" + str(item["id"]), updateDir=config['pints.dir'], 
+                                                dispatch=self.dispatch, tapId=item["id"], commandPin=item["loadCellCmdPin"], 
+                                                responsePin=item["loadCellRspPin"], unit=item["loadCellUnit"], logger=log.logger,
+                                                scaleRatio=item["loadCellScaleRatio"], tareOffset=item["loadCellTareOffset"], equipType=LOAD_CELL_EQUIP_TYPE_GT )
+                loadCell.start()
+                self.loadCellThreads.append(loadCell)
             
         self.readers = []
         if RFID_IMPORT_SUCCESSFUL:
@@ -365,16 +362,7 @@ class FlowMonitor(object):
                 item.exit()
         if self.tempProbeThread is not None and self.tempProbeThread.is_alive():
             self.tempProbeThread.exit()
-        
-        self.resetAlamode = True
         self.alaIsAlive = False
-        self.alamodeUseRFID = False
-        
-        self.motionDetectors = []
-        self.loadCellThreads = []
-        self.readers = []
-        self.iSpindels = []
-        self.tempProbeThread = None
             
     def processMsg(self, msg):
         reading = msg.split(";")
@@ -449,21 +437,6 @@ class FlowMonitor(object):
             COUNT = int(reading[part])
             part += 1
             WritePinsThread("WP", reading, self.dispatch).start()
-            msg = "DONE;%d;%d|" % (COUNT, MODE)
-            #debug( "Sending "+ msg )
-            self.write_notimeout(msg)
-            
-        elif ( reading[0] == "UP" and len(reading) >= 3 ):
-            #debug( "got a Update Pins Request: "+ msg )
-            part = 1
-            MODE = int(reading[part])
-            part += 1
-            COUNT = int(reading[part])
-            part += 1
-            try:
-                UpdatePinsThread("UP", reading, self.dispatch).start()
-            except:
-                debug("Unable to start new update thread")
             msg = "DONE;%d;%d|" % (COUNT, MODE)
             #debug( "Sending "+ msg )
             self.write_notimeout(msg)
@@ -659,36 +632,12 @@ class WritePinsThread (threading.Thread):
             if self.delay > 0:
                 time.sleep(self.delay) 
                 
-class UpdatePinsThread (threading.Thread):
-    def __init__(self, threadID, splitMsg, dispatch, delay = .005):
-        threading.Thread.__init__(self)
-        self.threadID = threadID
-        self.splitMsg = splitMsg
-        self.delay = delay
-        self.dispatch = dispatch
-      
-    def run(self):
-        part = 1
-        MODE = int(self.splitMsg[part])
-        part += 1
-        COUNT = int(self.splitMsg[part])
-        part += 1
-        while ( part-2 <= COUNT and COUNT > 0 ):
-            if not self.splitMsg[part]:
-                debug("Got empty pin for part "+str(part))
-                continue
-            self.dispatch.updatepinvalue(int(self.splitMsg[part]), MODE)
-            part += 1
-            if self.delay > 0:
-                time.sleep(self.delay) 
-                
 #Following is based on code from day_trippr (coverted to thread and allow configurable pin)
 class MotionDetectionPIRThread (threading.Thread):
-    def __init__(self, threadID, dispatch, pirPin = 7, ledPin=0, soundFile='', 
+    def __init__(self, threadID, pirPin = 7, ledPin=0, soundFile='', 
                 mqttCommand='', mqttEvent='', mqttUser='', mqttPass='', mqttHost='', mqttPort='', mqttInterval=100):
         threading.Thread.__init__(self)
         self.threadID = threadID
-        self.dispatch = dispatch
         self.pirPin = pirPin
         self.shutdown_required = False
         self.ledPin = ledPin
@@ -696,7 +645,7 @@ class MotionDetectionPIRThread (threading.Thread):
         self.mqttCommand = mqttCommand
         self.mqttEvent = mqttEvent
         self.mqttClient = None
-        if self.mqttCommand != '' and MQTT_IMPORT_SUCCESSFUL:
+        if self.mqttCommand != '':
             # Initiate MQTT Client
             self.mqttClient = mqtt.Client()
             #user and Pass
@@ -716,7 +665,7 @@ class MotionDetectionPIRThread (threading.Thread):
         if self.ledPin != 0:
             self.dispatch.updatepin(int(self.ledPin), True)
         if self.soundFile != '':
-            os.system("mpg321 -q " + self.soundFile)
+            os.system(mpg321 + self.soundFile)
         else:
             time.sleep(1)
         if self.mqttClient != None and self.mqttCommand != '':
@@ -750,8 +699,6 @@ class LoadCellCheckThread (threading.Thread):
         self.responsePin = responsePin
         self.delay = delay
         self.updateVariance = updateVariance
-        if self.updateVariance == 0:
-            self.updateVariance = .1
         self.unit = unit
         self.checkTare = False
         self.shutdown_required = False
@@ -765,8 +712,8 @@ class LoadCellCheckThread (threading.Thread):
         self.checkTare = checkTare
         
     def tare(self):
-        self.hx711.tare()
-        self.dispatch.setLoadCellTareOffset(self.tapId, self.hx711.get_offset())
+        self.hx711.zero()
+        self.dispatch.setLoadCellTareOffset(self.hx711.get_offset())
         return
     
     def getWeight(self):
@@ -798,7 +745,6 @@ class LoadCellCheckThread (threading.Thread):
                         subprocess.call(["php", self.updateDir + '/admin/updateGasTank.php', str(self.tapId), str(weight), self.unit])
                     else:
                         subprocess.call(["php", self.updateDir + '/admin/updateKeg.php', str(self.tapId), str(weight), self.unit])
-                    #self.dispatch.sendflowcount(-1, self.tapId, lastWeight - weight)
                     debug(self.threadID+": Updating "+str(self.tapId)+" Weight="+str(weight)+" "+self.unit)
                     lastWeight = weight
                 time.sleep(self.delay)

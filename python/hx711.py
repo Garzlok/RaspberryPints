@@ -267,7 +267,7 @@ class HX711:
        else:
           # If times is even we have to take the arithmetic mean of
           # the two middle values.
-          midpoint = int(len(valueList) / 2)
+          midpoint = len(valueList) / 2
           return sum(valueList[midpoint:midpoint+2]) / 2.0
 
 
@@ -294,7 +294,11 @@ class HX711:
         
     # Compatibility function, uses channel A version
     def get_weight(self, times=3):
-        return self.get_weight_A(times)
+        if GPIO_IMPORT_SUCCESSFUL:
+            return self.get_weight_A(times)
+        else:
+            self.nextEmulationByte = (self.nextEmulationByte%20)+1
+            return self.nextEmulationByte
 
 
     def get_weight_A(self, times=3):

@@ -1417,15 +1417,6 @@ installTempProbes(){
 	fi
 }
 setupFlowMon(){
-	if echo "$VER_NAME" | grep -iq "^jessie" ; then
-		FLOW_METERS_PACKAGES=$FLOW_METERS_PACKAGES_JESSIE
-	fi
-	# Bullseye uses python3 which MySQLdb import is not supported
-	if echo "$VER_NAME" | grep -iq "^bullseye" ; then
-		pip install pymysql
-		FLOW_METERS_PACKAGES=$FLOW_METERS_PACKAGES_BULLSEYE
-	fi
-	
     if [ ! -f "${INIT_DIRECTORY}/flowmon" ]; then
 		# install necessary packages
 		apt-get install --assume-yes ${FLOW_METERS_PACKAGES}
@@ -1636,7 +1627,7 @@ configureMonitor(){
 		sed -i -E 's/^\s*(@chromium.*)/#\1/g' $START_CONFIG_FILE
 		if promptYN "Do you want to start with Chromium in Kiosk Mode?" "Y"; 
 		then
-			echo '@chromium --kiosk localhost' >> $START_CONFIG_FILE
+			echo '@chromium-browser --kiosk localhost' >> $START_CONFIG_FILE
 		fi
 	fi
 	 
@@ -1684,10 +1675,10 @@ EOF
 		reboot
 	fi
 	if promptYN "Open RaspberryPints" "Y"; then
-		su pi chromium http://localhost
+		su pi chromium-browser http://localhost
 	fi
 	if promptYN "Open RaspberryPints Admin?" "Y"; then
-		su pi chromium http://localhost/admin/index.php
+		su pi chromium-browser http://localhost/admin/index.php
 	fi
 }
 

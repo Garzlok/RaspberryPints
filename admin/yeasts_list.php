@@ -215,8 +215,8 @@ require_once 'scripts.php';
             		else
             		{
             			clearInputError(input);
-            		}
             		}				
+    		 	}
     		});
 
         	return valid;

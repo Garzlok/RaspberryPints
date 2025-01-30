@@ -12,6 +12,7 @@ class User
 	private $_mugid;
 	private $_email;
 	private $_unTapAccessToken;
+	private $_unTapAccessSecret;
 	private $_admin;
 	private $_createdDate; 
 	private $_modifiedDate; 
@@ -44,6 +45,9 @@ class User
 	
 	public function get_unTapAccessToken(){ return $this->_unTapAccessToken; }
 	public function set_unTapAccessToken($_unTapAccessToken){ $this->_unTapAccessToken = $_unTapAccessToken; }
+
+	public function get_unTapAccessSecret(){ return $this->_unTapAccessSecret; }
+	public function set_unTapAccessSecret($_unTapAccessSecret){ $this->_unTapAccessSecret = $_unTapAccessSecret; }
 
 	public function get_isAdmin(){ return $this->_admin; }
 	public function set_isAdmin($_admin){ $this->_admin = $_admin; }
@@ -103,6 +107,11 @@ class User
 			$this->set_unTapAccessToken($postArr['unTapAccessToken']);
 		else
 			$this->set_unTapAccessToken(null);
+
+		if( isset($postArr['unTapAccessSecret']) )
+			$this->set_unTapAccessSecret($postArr['unTapAccessSecret']);
+		else
+			$this->set_unTapAccessSecret(null);
 			
 		if( isset($postArr['isAdmin']) )
 			$this->set_isAdmin($postArr['isAdmin']);
@@ -132,6 +141,7 @@ class User
 			"mugid: " . $this->get_mugid() . ", " .
 			"email: '" . encode($this->get_email()) . "', " .
 			"unTapAccessToken: '" . encode($this->get_unTapAccessToken()) . "', " .
+			"unTapAccessSecret: '" . encode($this->get_unTapAccessSecret()) . "', " .
 			"isadmin: " . $this->get_isAdmin() . ", " .
 			"createdDate: new Date('" . $this->get_createdDate() . "'), " .
 			"modifiedDate: new Date('" . $this->get_modifiedDate() . "') " . 
