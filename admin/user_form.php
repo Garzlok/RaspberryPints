@@ -133,7 +133,7 @@ include 'top_menu.php';
 								<input name="untappd" type="submit" class="btn" value="Retrieve" />
 							<?php }?>
 						</td>
-					</tr>		
+					</tr>
 					<tr>
 						<td><b>Mug Id:</b></td>
 						<td><input type="text" id="mugId" class="smallbox" name="mugId"

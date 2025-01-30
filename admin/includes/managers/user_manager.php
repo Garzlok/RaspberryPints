@@ -10,7 +10,7 @@ class UserManager extends Manager{
 		return ["id"];
 	}
 	protected function getColumns(){
-		return ["username", "active", "nameFirst", "nameLast", "mugId", "email", "isAdmin", "unTapAccessToken", "UntapAccessSecret"];
+		return ["username", "active", "nameFirst", "nameLast", "mugId", "email", "isAdmin", "unTapAccessToken"];
 	}
 	protected function getTableName(){
 		return "users";
