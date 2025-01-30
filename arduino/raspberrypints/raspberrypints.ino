@@ -37,6 +37,7 @@ ISR(PCINT3_vect, ISR_ALIASOF(PCINT0_vect));//Handle PCINT3 as if its PCINT0
 
 #define CMD_READ_PINS     "RP"
 #define CMD_WRITE_PINS    F("WP")
+#define CMD_UPDATE_PINS   F("UP")
 #define CMD_SET_PINS_MODE F("SM")
 #define MSG_DELIMETER   ";"
 
@@ -88,6 +89,11 @@ unsigned long lastBlinkState = LOW;
 unsigned long lastSend = 0;
 int waitingStatusResponse = false;
 void debug(char *sfmt, ...);
+#define writePin(pin, value) _writePin(pin, value, true, __func__)
+#define writePinUpdatePi(pin, value, updatePi) _writePin(pin, value, updatePi, __func__)
+
+#define writePins( count, pins, state ) _writePins(count, pins, state, true, __func__)
+#define sendPins(cmd, count, msg, state) _sendPins(cmd, count, msg, state, __func__)
 // Install Pin change interrupt for a pin, can be called multiple times
 void pciSetup(byte pin) 
 {
@@ -290,14 +296,14 @@ void loop() {
     	//Only log if we have a major pulse count
         if( pulseCount[i] > 10 )debug("%s %d %d %lu %lu %lu %d %d %d",
               "RT L", pulsePin[i], i,
-              nowTime, lastTapPulseTime, nowTime-lastTapPulseTime,
+              nowTime, lastTapPulseTime, (nowTime-lastTapPulseTime),
               pourMsgDelay,
               pulseCount[i], pourTriggerValue);
         resetTap(i);
       }
       if ( useValves && shutNonPouring ){
           debug("%s %d %d %lu %lu %lu %d %d %d", "SD NP L ", pulsePin[i], i,
-                nowTime, lastTapPulseTime, nowTime-lastTapPulseTime, pourMsgDelay,
+                nowTime, lastTapPulseTime, (nowTime-lastTapPulseTime), pourMsgDelay,
                 pulseCount[i], pourTriggerValue);
     	  shutDownNonPouringTaps(i);
       }
@@ -337,7 +343,7 @@ void pollPins() {
         }else{
           kickedCount[i] ++;
         }
-        lastPulseTime[i] = lastPinStateChangeTime[i] =  millis();
+        lastPulseTime[i] = lastPinStateChangeTime[i] = millis();
       }
       lastPinState[i] = pinState;
     }
@@ -395,8 +401,8 @@ void piStatusCheck(){
 					   !isValvePinPouring(valvesPin[tapNum], tapNum) ){
 				  writePin(valvesPin[tapNum], !relayTrigger);
 			 }
+			 manualValveState[tapNum] = newState;
 		  }
-		  manualValveState[tapNum] = newState;
 	  }
 
 
@@ -430,7 +436,7 @@ void LED(unsigned int delay){
   if((millis() - lastBlinkTime) < delay) return;
   int state = LOW;
   if(lastBlinkState == LOW) state = HIGH;
-  writePin(LED_PIN, state);
+  writePinUpdatePi(LED_PIN, state, false);
   lastBlinkState = state;
   lastBlinkTime = millis();
 }
@@ -441,7 +447,7 @@ void resetTap(int tapNum){
   updateCount[tapNum]  = 0;
   lastPulseTime[tapNum] = 0;
   kickedCount[tapNum]  = 0;
-  if(useValves > 0){
+  if(useValves > 0 && activeUserId == INVALID_USER_ID){
     shutDownTap(tapNum);
   }/*else if(useRFID > 0 && activeUserId > 0){		
    		unsigned int pouring = false;
@@ -526,7 +532,7 @@ int getsc() {
   return getsc_timeout(-1);
 }
 
-int getsc_timeout(long timeout) {
+int getsc_timeout(unsigned long timeout) {
   unsigned long startTime = millis();
   while(Serial.available() <= 0 )
   {
@@ -636,16 +642,17 @@ unsigned char readPin(int pin) {
 /**
  * Write A Pin helper allows requesting python to write the pin for Arduino
  */
-void writePin(int pin, uint8_t state) {
+void _writePin(int pin, uint8_t state, int updatePi, char *func) {
   static int	pins[1];
   pins[0] = pin;
-  writePins(1, pins, state);
+  _writePins(1, pins, state, updatePi, func);
 }
-void writePins(int count, int pins[], uint8_t state) {
+void _writePins(int count, int pins[], uint8_t state, int updatePi, char *func) {
   int  ii = 0;
   int  pinCount = 0;
   int  pin;
   static char msg[INPUT_SIZE];
+  static char update_msg[INPUT_SIZE];
   memset( msg, 0, sizeof(msg) );
   while (ii < count )
   {	
@@ -658,6 +665,9 @@ void writePins(int count, int pins[], uint8_t state) {
     }
     if(pin > 0) {
       digitalWrite(pin, state);		
+      memset( update_msg, 0, sizeof(update_msg) );
+      snprintf(update_msg, INPUT_SIZE, "%s%s%d", update_msg, (update_msg[0]==0?"":MSG_DELIMETER), pin);
+      if( updatePi ) _sendPins(CMD_UPDATE_PINS, 1, update_msg, state, func);
     }
     else if(pin < 0){
       if( MAX_PIN_LENGTH + strlen(msg) + 1 < INPUT_SIZE)
@@ -668,7 +678,7 @@ void writePins(int count, int pins[], uint8_t state) {
       else 
       {
         //Not enough space in the string to write send what we have and retry pin
-        sendPins(CMD_WRITE_PINS, pinCount, msg, state);
+        _sendPins(CMD_WRITE_PINS, pinCount, msg, state, func);
         pinCount = 0;
         memset( msg, 0, sizeof(msg) );
         ii--;
@@ -677,11 +687,11 @@ void writePins(int count, int pins[], uint8_t state) {
   }
   if ( msg [0] != 0 )
   {
-    sendPins(CMD_WRITE_PINS, pinCount, msg, state);
+    _sendPins(CMD_WRITE_PINS, pinCount, msg, state, func);
   }
 } // End writePin()
 
-void sendPins(const __FlashStringHelper *cmd, int count, char *msg, uint8_t state){
+void _sendPins(const __FlashStringHelper *cmd, int count, char *msg, uint8_t state, char *func){
   unsigned long sendTime = millis();
 
   serialPrint(cmd);
@@ -694,6 +704,8 @@ void sendPins(const __FlashStringHelper *cmd, int count, char *msg, uint8_t stat
     serialPrint(MSG_DELIMETER);
   }
   serialPrint(msg);
+  serialPrint(MSG_DELIMETER);
+  serialPrint(func);
   serialPrintln("");
   serialFlush();
   

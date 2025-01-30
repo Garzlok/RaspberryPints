@@ -860,7 +860,7 @@ CREATE TABLE IF NOT EXISTS `kegs` (
 --
 
 CREATE TABLE IF NOT EXISTS `tapconfig` (
-  `tapId` int(11) DEFAULT NULL,
+  `tapId` int(11) NOT NULL,
   `flowPin` int(11) DEFAULT NULL,
   `valvePin` int(11) DEFAULT NULL,
   `valveOn` int(11) DEFAULT NULL,
@@ -874,6 +874,7 @@ CREATE TABLE IF NOT EXISTS `tapconfig` (
   `loadCellTareOffset` float DEFAULT NULL,
   `loadCellUnit` tinytext DEFAULT NULL,
   `loadCellTareDate` TIMESTAMP NULL,
+  `loadCellUpdateVariance` decimal(10,5) NULL,
   `plaatoAuthToken` tinytext NULL,
 	PRIMARY KEY (`tapId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -1650,7 +1651,7 @@ INSERT INTO srmRgb ( srm, rgb, createdDate, modifiedDate ) VALUES
 
 CREATE TABLE IF NOT EXISTS `ioPins` (
 	`shield` varchar(30) NOT NULL,
-  `pin` int(11) DEFAULT NULL,
+  `pin` int(11) NOT NULL,
   `displayPin` text DEFAULT NULL,
 	`name` tinytext NULL,
   `col` int(11) DEFAULT NULL,
@@ -1663,7 +1664,7 @@ CREATE TABLE IF NOT EXISTS `ioPins` (
 	PRIMARY KEY (`shield`, `pin`)
 ) ENGINE=InnoDB	DEFAULT CHARSET=latin1;
 
-INSERT INTO ioPins ( shield, pin, name, col, row, rgb, pinSide, notes, createdDate, modifiedDate ) VALUES
+INSERT INTO ioPins ( shield, pin, name, col, `row`, rgb, pinSide, notes, createdDate, modifiedDate ) VALUES
 
 ('Pi', 1, 'PWR/3.3V', 1, 1, '255,200,126', 'right', '', NOW(), NOW()),
 
@@ -2357,6 +2358,7 @@ CREATE TABLE IF NOT EXISTS `gasTanks` (
         `loadCellTareOffset` float DEFAULT NULL,
         `loadCellUnit` tinytext DEFAULT NULL,
         `loadCellTareDate` TIMESTAMP NULL,
+        `loadCellUpdateVariance` decimal(10,5) NULL,
 	`active` tinyint(1) NOT NULL DEFAULT 1,
 	`createdDate` TIMESTAMP NULL,
 	`modifiedDate` TIMESTAMP NULL,
@@ -2398,6 +2400,7 @@ select
         g.loadCellTareOffset AS loadCellTareOffset,
         g.loadCellUnit AS loadCellUnit,
         g.loadCellTareDate AS loadCellTareDate,
+        g.loadCellUpdateVariance AS loadCellUpdateVariance,
 	g.modifiedDate AS modifiedDate,
 	g.createdDate AS createdDate 
 from (gasTanks g 
@@ -2562,9 +2565,9 @@ AS
   UNION
   (SELECT CASE WHEN tc.valvePin < 0 THEN 'Pi' ELSE '' END AS shield, CONCAT('Tap ', t.tapNumber, ' Valve')      AS Hardware, ABS(tc.valvePin) AS pin FROM tapconfig tc LEFT JOIN taps t ON (tc.tapId = t.id))
   UNION
-  (SELECT CASE WHEN tc.loadCellCmdPin < 0 THEN 'Pi' ELSE '' END AS shield, CONCAT('Tap ', t.tapNumber, ' Load Cell Command')      AS Hardware, ABS(tc.loadCellCmdPin) AS pin FROM tapconfig tc LEFT JOIN taps t ON (tc.tapId = t.id))
+  (SELECT 'Pi' AS shield, CONCAT('Tap ', t.tapNumber, ' Load Cell Command')      AS Hardware, ABS(tc.loadCellCmdPin) AS pin FROM tapconfig tc LEFT JOIN taps t ON (tc.tapId = t.id))
   UNION
-  (SELECT CASE WHEN tc.loadCellRspPin < 0 THEN 'Pi' ELSE '' END AS shield, CONCAT('Tap ', t.tapNumber, ' Load Cell Response')      AS Hardware, ABS(tc.loadCellRspPin) AS pin FROM tapconfig tc LEFT JOIN taps t ON (tc.tapId = t.id))
+  (SELECT 'Pi' AS shield, CONCAT('Tap ', t.tapNumber, ' Load Cell Response')      AS Hardware, ABS(tc.loadCellRspPin) AS pin FROM tapconfig tc LEFT JOIN taps t ON (tc.tapId = t.id))
   UNION
   (SELECT CASE WHEN pin        <> 0 THEN 'Pi' ELSE '' END AS shield, CONCAT('RFID ', name, ' Trigger')          AS Hardware, ABS(pin) AS pin FROM rfidReaders)
   UNION
@@ -2576,9 +2579,9 @@ AS
   UNION
   (SELECT CASE WHEN configValue<> 0 THEN 'Pi' ELSE '' END AS shield, displayName                                AS Hardware, ABS(configValue) AS pin FROM config WHERE configName IN ('valvesPowerPin', 'useFanPin'))
   UNION
-  (SELECT CASE WHEN gt.loadCellCmdPin < 0 THEN 'Pi' ELSE '' END AS shield, CONCAT('Gas Tank ', COALESCE(gt.label, gt.id), ' Load Cell Command')      AS Hardware, ABS(gt.loadCellCmdPin) AS pin FROM gasTanks gt)
+  (SELECT 'Pi' AS shield, CONCAT('Gas Tank ', COALESCE(gt.label, gt.id), ' Load Cell Command')      AS Hardware, ABS(gt.loadCellCmdPin) AS pin FROM gasTanks gt)
   UNION
-  (SELECT CASE WHEN gt.loadCellRspPin < 0 THEN 'Pi' ELSE '' END AS shield, CONCAT('Gas Tank ', COALESCE(gt.label, gt.id), ' Load Cell Response')      AS Hardware, ABS(gt.loadCellRspPin) AS pin FROM gasTanks gt);
+  (SELECT 'Pi' AS shield, CONCAT('Gas Tank ', COALESCE(gt.label, gt.id), ' Load Cell Response')      AS Hardware, ABS(gt.loadCellRspPin) AS pin FROM gasTanks gt);
   
 CREATE OR REPLACE VIEW vwIoPins
 AS
