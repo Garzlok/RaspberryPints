@@ -212,6 +212,7 @@
         }
         </script>
 
+	<meta name="viewport" content="width=device-width, initial-scale=0.73" />		
 <!-- <meta name="viewport" content="initial-scale=0.7,width=device-width,height=device-height,target-densitydpi=device-dpi,user-scalable=yes" />  -->
 		<script type="text/javascript" src="admin/scripts/ws.js"></script>
     <script type="text/javascript">
