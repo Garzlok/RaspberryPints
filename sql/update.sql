@@ -1213,7 +1213,7 @@ CREATE TABLE IF NOT EXISTS `gasTanks` (
  
 CALL addColumnIfNotExist(DATABASE(), 'gasTanks', 'loadCellUpdateVariance', 'decimal(10,5) NULL' );
 CALL addColumnIfNotExist(DATABASE(), 'tapconfig', 'loadCellUpdateVariance', 'decimal(10,5) NULL' );
- 
+
 CREATE OR REPLACE VIEW vwGasTanks 
 AS
 select 
