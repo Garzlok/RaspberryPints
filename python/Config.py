@@ -21,9 +21,6 @@ config['loadcell.debug' ] = False#True
 #logging settings for iSpindel Devices
 config['iSpindel.debug' ] = False#True
 
-#logging settings for the Websocket
-config['websocket.debug' ] = False#True
-
 #Use fake monitoring to report flow
 config['dispatch.debugMonitoring' ] = False
 
