@@ -105,23 +105,14 @@ def connectDB():
         
     return con
 
-class WebServerFormatLogger ():
-    #these function are used by the websocket only and we really only want to log info when we debug
-    def info(self, msg, *args, **kwargs):
-        Logger().debug(msg % args, process="WEBSOC", logDB=False, debugConfig='websocket.debug', logWho="WEBSOC")
-    def debug(self, msg, *args, **kwargs):
-        Logger().debug(msg % args, process="WEBSOC", logDB=False, debugConfig='websocket.debug', logWho="WEBSOC")
-    def error(self, msg, *args, **kwargs):
-        Logger().log(msg % args, process="WEBSOC", logDB=True, logWho="WEBSOC")
-
 loggerLastClean = None
-class Logger ():   
-    def debug(self, msg, process="PintDispatch", logDB=True, debugConfig='dispatch.debug', logWho="RPINTS"):
+class Logger ():
+    def debug(self, msg, process="PintDispatch", logDB=True, debugConfig='dispatch.debug'):
         if(config[debugConfig]):
-            self.log(msg, process, True, logDB, logWho)
+            self.log(msg, process, True, logDB)
                      
-    def log(self, msg, process="PintDispatch", isDebug=False, logDB=True, logWho="RPINTS"):
-        print (datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') + " " + logWho + " " + msg) 
+    def log(self, msg, process="PintDispatch", isDebug=False, logDB=True):
+        print (datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') + " RPINTS: " + msg) 
         sys.stdout.flush() 
         if logDB:
             self.logDB(msg, process, isDebug)
@@ -570,7 +561,7 @@ class PintDispatch(object):
     def sendflowcount(self, rfid, pin, count):
         if self.OPTION_RESTART_FANTIMER_AFTER_POUR:
             self.fanControl.restartNeeded(True)
-        msg = "RPU:FLOW:" + str(pin) + "=" + str(count) + ":" + str(rfid)
+        msg = "RPU:FLOW:" + str(pin) + "=" + str(count) +":" + rfid
         debug("count update: "  + msg.rstrip())
         self.sendMCastMessage(msg)
         
@@ -620,7 +611,7 @@ class PintDispatch(object):
         options.is_executable_method = None
         os.chdir(options.document_root)
         _configure_logging(options)        
-        server = WebSocketServer(options, WebServerFormatLogger())
+        server = WebSocketServer(options)
         server.serve_forever()
 
     # main setup
@@ -635,17 +626,17 @@ class PintDispatch(object):
 
         log("starting WS server")
         t = threading.Thread(target=self.spawnWebSocketServer)
-        t.daemon = True
+        t.setDaemon(True)
         t.start()
 
         log("starting device monitors...")
         t = threading.Thread(target=self.spawn_flowmonitor)
-        t.daemon = True
+        t.setDaemon(True)
         t.start()
             
         log("starting command server")
         t = threading.Thread(target=self.commandserver.serve_forever)
-        t.daemon = True
+        t.setDaemon(True)
         t.start()
         
         log("starting fan control")

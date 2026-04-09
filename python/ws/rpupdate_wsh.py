@@ -15,11 +15,7 @@ import time
 from pprint import pprint
 from mod_pywebsocket import common
 from mod_pywebsocket import handshake
-#not sure if this is really needed any more
-try:
-    from symbol import except_clause
-except:
-    pass
+from symbol import except_clause
 
 MCAST_GRP = '224.1.1.1'
 MCAST_PORT = 0xBEE2
