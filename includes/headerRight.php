@@ -128,7 +128,7 @@ if (null !== $temp) {
 		<td style="width:55%;border-left:none">
         <div class="temp-container">
         	<div class="temp-indicator">
-        		<div class="temp-full" style="height:<?php echo convert_temperature($temp*.15, $tempUnit, UnitsOfMeasure::TemperatureFahrenheight); ?>%; padding-right: 5px"></div>
+        		<div class="temp-full" style="height:<?php echo convert_temperature($temp*1.00, $tempUnit, UnitsOfMeasure::TemperatureFahrenheight); ?>%; padding-right: 5px"></div>
         	</div>
         </div>
         </td>

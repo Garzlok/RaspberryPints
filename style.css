@@ -175,7 +175,7 @@ hr {
 }
 h1 {
 	margin: 0;
-	font-size: 2.5em;
+	font-size: 3.5em;
 	text-shadow: 2px 2px black;
 	color: #FF6600;
 }
@@ -295,7 +295,7 @@ img {
   border-radius: .5em;
   -moz-border-radius: .5em;
   -webkit-border-radius: .5em;
-  font: 2em You Rook Marbelous;
+  font: 3.5em You Rook Marbelous;
   text-shadow: 1px 1px #FF6600;
   font-style: oblique;
   color: #000000;
@@ -507,7 +507,7 @@ img {
 
 .copyright {
 color:#F5F2E8 ;
-font: 1em Pinkoff Caps Bold;
+font: 2em Pinkoff Caps Bold;
 }
 
 .beerfeed {
@@ -553,14 +553,14 @@ table thead th{
 	vertical-align: top;
 }
 table h3 {
-	font: .8em Roboto;
+	font: 1em Roboto;
 	-webkit-margin-before: 5px;
 	-webkit-margin-after: 5px;
 	text-align: center;
 	font-weight: normal;
 }
 table h2 {
-	font: 1em Roboto;
+	font: 1.25em Roboto;
 	-webkit-margin-before: 0px;
 	-webkit-margin-after: 0px;
 	text-align: center;
@@ -569,12 +569,12 @@ table h1{
 	color: #FF6600;
 	opacity:1;
 	display:block;
-	font: 2em You Rook Marbelous;
+	font: 2.5em You Rook Marbelous;
 	font-weight: normal;
 }
 table .subhead{
 	width:100%;
-	font: .9em Roboto;
+	font: 1.5em Roboto;
 	text-align:left;
 }
 p.rating .num {
@@ -595,9 +595,9 @@ p.rating {
 }
 
 table p{
-	font: 1.15em Roboto;
+	font: 1.50em Roboto;
 	color: #FAEBD7;
-	margin-top:20px; 
+	margin-top:10px; 
 }	
 .tooltip {	
   position: relative;	

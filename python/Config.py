@@ -24,4 +24,12 @@ config['iSpindel.debug' ] = False#True
 #Use fake monitoring to report flow
 config['dispatch.debugMonitoring' ] = False
 
+# MQTT Connection Settings
+# config['flowmon.port'] = 'MQTT'  # Tell flowmon to use MQTT instead of serial
+config['mqtt.host'] = 'localhost'  # MQTT broker address
+config['mqtt.port'] = '1883'       # MQTT broker port
+config['mqtt.user'] = 'RaspberryPints'  # MQTT username
+config['mqtt.password'] = 'RaspberryPints'  # MQTT password
+
 config['flowmon.port'] = '/dev/ttyACM0'
+
