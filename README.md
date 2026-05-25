@@ -939,7 +939,7 @@ Once you have beers and kegs in your system, you can assign them to taps:
 **Kicking a Keg** (Marking as Empty):
 1. Go to **Tap List**
 2. Locate the tap to remove
-3. Change Keg to blank (Empty)
+3. Change Keg to Select One
 4. Click **Save** at the bottom of the page to apply changes
 
 ### Calibrating Flow Meters
@@ -3015,6 +3015,33 @@ This ensures new subscribers immediately see the last published status.
 3. Optimize message frequency (don't publish more than necessary)
 4. Check for network congestion
 5. Consider local broker instead of cloud broker
+
+---
+
+## Part 8: Remote Boards via MQTT
+
+Thanks to garzlok and Thorrak, Arudino/NodeMCU/RpintsNodeMCU.ino was created to run 2 taps and temp probe on a NodeMCU board connected to a remote keaser (garage).
+
+This sketch is a starting point to anyone looking for a remote board that uses MQTT to talk with the PI running RPints.
+
+If you want to use both MQTT and Serial/USB you will need to modify Flowmonitor.py by editing the checks for 
+config['flowmon.port'] == "MQTT" 
+or
+config['flowmon.port'] != "MQTT"
+
+If they skip logic you need for serial comment out the if and return
+If there is an else to the if you can add or True to the if and change the else to if True:
+
+In the sketch you will need to update these variables before compiling and uploading
+// WiFi Settings
+const char* ssid = "YourSSID";
+const char* password = "YourSSID_PW";
+
+// MQTT Settings
+const char* mqtt_server = "raspberrypints.local";  //If your RaspberryPints has a static IP, you can use the IP address.
+const int mqtt_port = 1883;
+const char* mqtt_user = "YOUR_USER";  //If you change the MQTT user name, make sure you add that name here.
+const char* mqtt_pass = "YOUR_PW";
 
 ---
 
