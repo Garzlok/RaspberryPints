@@ -405,7 +405,17 @@ class FlowMonitor(object):
             debug("got a pour: " + msg)
             MCP_RFID = str(reading[1])
             MCP_PIN = str(reading[2])  
-            POUR_COUNT = str(reading[3])         
+            POUR_COUNT = str(reading[3])
+            if len(reading) >= 5:
+                debug("got a RFID: " + reading[4])
+                RAW_RFID = str(reading[4])
+                if not MCP_RFID and RAW_RFID:
+                    debug("Checking RFID: " + reading[4])
+                    proc = subprocess.check_output(["php", self.rfiddir, RAW_RFID])
+                    debug("Got RFID user: " + str(proc))
+                    usrId = int(proc)
+                    if usrId > -1:
+                        MCP_RFID = str(usrId)                        
             # The following 2 lines passes the PIN and PULSE COUNT to the php script
             subprocess.call(["php", self.poursdir, "Pour", MCP_RFID, MCP_PIN, POUR_COUNT])
             self.dispatch.sendflowcount(MCP_RFID, MCP_PIN, POUR_COUNT)
@@ -523,7 +533,7 @@ class FlowMonitor(object):
             
     def fakemonitor(self):
         running = True
-        debug("listening to Arduino")
+        debug("listening to Fake Arduino")
         updatecount = 0;
         pin = 10;
         
@@ -537,6 +547,8 @@ class FlowMonitor(object):
                     continue
                 if not self.processMsg(msg):
                     return
+        except Exception as e:
+            debug("exc " + str(e))          
         finally:
             debug("Closing serial connection to Arduino...")
             debug("Exiting")
