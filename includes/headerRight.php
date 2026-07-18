@@ -137,7 +137,7 @@ if (null !== $temp) {
 if($config[ConfigNames::ShowLastPour] && ($index == $lastPourIndex || $index < 0)) {
 ?>
         		<td class="poursbeername" colspan="2">
-        			<h1 style="font-size: 1.5em; text-align: left; text-shadow: 1.5px 1.5px 4px #000000;">Last Pour</h1>
+        			<h1 style="font-size: 1.75em; text-align: left; text-shadow: 1.5px 1.5px 4px #000000;">Last Pour</h1>
         		</td>
         		</tr>
         		<tr>
@@ -148,15 +148,15 @@ if($config[ConfigNames::ShowLastPour] && ($index == $lastPourIndex || $index < 0
         if(null !== $pour) {?>
         <?php if($pour->get_userName()){?>
         		<td class="poursuser">
-        			<h1 style="font-size: 1em; text-align: left"><?php echo $pour->get_userName(); ?></h1>
+        			<h1 style="font-size: 1.25emem; text-align: left"><?php echo $pour->get_userName(); ?></h1>
         		</td>
         		<?php }?>
         		<td class="poursbeername">
-        			<h1 style="font-size: 1em; text-align: center"><?php echo $pour->get_beerName(); ?></h1>
+        			<h1 style="font-size: 1.5em; text-align: center"><?php echo $pour->get_beerName(); ?></h1>
         		</td>
 				</tr>
         		<td class="poursamount">
-        			<h1 style="font-size: 2em; text-align: left"><?php echo $pour->get_amountPouredDisplay(); ?>oz</h1>
+        			<h1 style="font-size: 2.5em; text-align: left"><?php echo $pour->get_amountPouredDisplay(); ?>oz</h1>
 				<tr>
         		</td>
     	<?php } ?>
@@ -167,10 +167,10 @@ if($config[ConfigNames::ShowRPLogo] && ($index == $logoIndex || $index < 0)) {
 ?>
 <td>
 	<?php if($config[ConfigNames::UseHighResolution]) { ?>
-        <a href="http://www.raspberrypints.com"><img
+        <a href="https://homebrewtalk.com/threads/version-2-release-raspberrypints-digital-taplist-solution.487694/page-281"><img
         	src="img/RaspberryPints-4k.png" height="200" alt=""></a>
     <?php } else { ?>
-        <a href="http://www.raspberrypints.com"><img
+        <a href="https://homebrewtalk.com/threads/version-2-release-raspberrypints-digital-taplist-solution.487694/page-281"><img
         	src="img/RaspberryPints.png" height="100" alt=""></a>
     <?php } ?>
 </td>
@@ -196,9 +196,9 @@ if($config[ConfigNames::ShowFermOnMainPage] && ($index >= $fermenterStart && $in
     $fementer = $fermenters[array_keys($fermenters)[$index-$fermenterStart]];
     $iSpindel = (new iSpindelDeviceManager())->GetTopWithBeer($fementer->get_beerId(), $fementer->get_beerBatchId());
     ?>
-    <td style="position:relative;text-align:center;color:white">
-     <img height="65px" src="img/fermenter/fermenterSvg.php?container=conical&rgb=<?php echo $fementer->get_beerRgb();?>" />
-     <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);-webkit-text-stroke:black .1px;color:rgb(<?php echo $fementer->get_beerRgbCompliment();?>)">
+    <td style="position:relative;text-align:center; font-size: 1.5em;font-weight: bold; color:black">
+     <img height="55px" src="img/fermenter/fermenterSvg.php?container=conical&rgb=<?php echo $fementer->get_beerRgb();?>" />
+     <div style="position: absolute;top: 40%;left: 50%;transform: translate(-50%, -50%);-webkit-text-stroke:black .1px;color:rgb(<?php echo $fementer->get_beerRgbCompliment();?>)">
      <?php
      echo $fementer->get_label();
      if( $iSpindel && $iSpindel->get_currentTemperature() && $iSpindel->get_currentGravity()){

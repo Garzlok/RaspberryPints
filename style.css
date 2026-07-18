@@ -113,8 +113,9 @@ table td.name{
 }
 .poursbeername{
 	width: 400px;
+	font-size: .65em;
 	text-align: center;
-	vertical-align: middle;	
+	vertical-align: botttom;	
 }
 .poursbeerimg{
 	width:50px ;
@@ -157,11 +158,15 @@ html, body {
 	background-color: #000000;
 	background-size: cover;
 	background-repeat:no-repeat;
+	margin: 0;
+	padding: 0;
+	width: 100vw;
+	height: 100vh;
 	overflow: hidden;
 /*	color: #FFFFFF;
 	font: 1em Roboto, Roboto, arial, verdana, sans-serif; */
-	margin:2px;
-	height:99%;
+/*	margin:2px;
+	height:99%; */
 }
 hr {
 	border: 1.5px dotted #FF6600;
