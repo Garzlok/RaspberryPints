@@ -441,7 +441,7 @@
 							 if($editting || !( !isset($config[ConfigNames::AmountPerPint]) || $config[ConfigNames::AmountPerPint] == 0)){
 							     $beer['remainAmount'] = convert_volume($beer['remainAmount'], $beer['remainAmountUnit'], $config[ConfigNames::DisplayUnitVolume], FALSE, TRUE);
 							     echo '<div id="pintsLeft"'.((!isset($config[ConfigNames::AmountPerPint]) || $config[ConfigNames::AmountPerPint] == 0)?'style="display:none"':'').'>'.number_format((float)$beer['remainAmount']/((float)$config[ConfigNames::AmountPerPint]==0?1:(float)$config[ConfigNames::AmountPerPint]), 1); echo " Pints Left</div>";
-							 }
+							 } 
 							?> 
 							<?php DisplayEditCheckbox($editting, $config, ConfigNames::ShowRemainValue, 'remaining'); ?></h3>
 							<?php if($editting){?><span class="tooltip">Amount (<?php echo $config[ConfigNames::DisplayUnitVolume]?>) Per Pint:<input type="number" min="0" class="smallbox" style="background-repeat: unset;" value="<?php echo $config[ConfigNames::AmountPerPint]; ?>" name="<?php echo ConfigNames::AmountPerPint; ?>" onchange="updateKegLeftText(this)"><span class="tooltiptext">If greater than 0 then pints remaining will be displayed</span></span> <?php }?>
