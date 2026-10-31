@@ -16,6 +16,12 @@
 ?>
 
 <table id="beerList" style="text-align: center">
+    <?php 
+    $startTap = 1;
+    $tapsPerPage = 5;//$numberOfBeers;
+    $endTap = min($startTap + $tapsPerPage, $numberOfBeers);
+    while($startTap <= $numberOfBeers ) {
+    ?>
 	<?php for($col = 1; $col <= $MAX_COLUMNS; $col++){?>
     	<?php if( !$editting ){?>
         	<?php if($col == 1){?>
@@ -27,7 +33,7 @@
     	<?php }else if($col == 1){?>
     		<tbody>
     	<?php }?>
-		<?php if(beerListShouldDisplayRow($editting, $col, $config[ConfigNames::TapNumColNum])){ ?>
+		<?php if(beerListShouldDisplayRow($editting, $col, $config[ConfigNames::TapNumColNum]) && $startTap == 1){ ?>
 		<tr class="<?php if($row++%2 > 0){ echo 'altrow'; } ?>">
 			<?php if($editting || $config[ConfigNames::ShowBeerTableHead]){?>
 			<td class="<?php if(!$config[ConfigNames::ShowBeerTableHead]){echo ' disabled';}?>">
@@ -35,7 +41,7 @@
 				<input type="hidden" name="<?php echo ConfigNames::TapNumColNum;?>" id="<?php echo ConfigNames::TapNumColNum;?>" value="<?php echo abs($config[ConfigNames::TapNumColNum]);?>"/>
 			</td>
 			<?php }?>
-    		<?php for($i = 1; $i <= $numberOfBeers; $i++) {
+    		<?php for($i = $startTap; $i <= $endTap; $i++) {
     			$beer = null;
     			if( isset($beers[$i]) ) $beer = $beers[$i];
     			if($tapOrBottle != ConfigNames::CONTAINER_TYPE_KEG  && !isset($beer) ) continue;
@@ -83,7 +89,7 @@
 				<input type="hidden" name="<?php echo ConfigNames::SrmColNum;?>" id="<?php echo ConfigNames::SrmColNum;?>" value="<?php echo abs($config[ConfigNames::SrmColNum]);?>"/>
 			</td>
 			<?php }?>
-    		<?php for($i = 1; $i <= $numberOfBeers; $i++) {
+    		<?php for($i = $startTap; $i <= $endTap; $i++) {
     			$beer = null;
     			if( isset($beers[$i]) ) $beer = $beers[$i];
     			if($tapOrBottle != ConfigNames::CONTAINER_TYPE_KEG  && !isset($beer) ) continue;
@@ -126,7 +132,7 @@
 				<input type="hidden" name="<?php echo ConfigNames::IbuColNum;?>" id="<?php echo ConfigNames::IbuColNum;?>" value="<?php echo abs($config[ConfigNames::IbuColNum]);?>"/>
 			</td>
 			<?php }?>
-    		<?php for($i = 1; $i <= $numberOfBeers; $i++) {
+    		<?php for($i = $startTap; $i <= $endTap; $i++) {
     			$beer = null;
     			if( isset($beers[$i]) ) $beer = $beers[$i];
     			if($tapOrBottle != ConfigNames::CONTAINER_TYPE_KEG  && !isset($beer) ) continue;
@@ -180,7 +186,7 @@
 				<input type="hidden" name="<?php echo ConfigNames::BeerInfoColNum;?>" id="<?php echo ConfigNames::BeerInfoColNum;?>" value="<?php echo abs($config[ConfigNames::BeerInfoColNum]);?>"/>
 			</td>
 			<?php }?>
-    		<?php for($i = 1; $i <= $numberOfBeers; $i++) {
+    		<?php for($i = $startTap; $i <= $endTap; $i++) {
     		    $beer = null;
     		    $beerColSpan = 1;
     			if( isset($beers[$i]) ) $beer = $beers[$i];
@@ -218,7 +224,7 @@
         				<?php if($editting || $config[ConfigNames::ShowBeerRating]){?>&nbsp; &nbsp; RATING<hr><?php } ?>
         			</td>
         		<?php }?>
-    		<?php for($i = 1; $i <= $numberOfBeers; $i++) {
+    		<?php for($i = $startTap; $i <= $endTap; $i++) {
     		    $beer = null;
     		    $beerColSpan = 2;
     			if( isset($beers[$i]) ) $beer = $beers[$i];
@@ -274,7 +280,7 @@
 				<input type="hidden" name="<?php echo ConfigNames::AbvColNum;?>" id="<?php echo ConfigNames::AbvColNum;?>" value="<?php echo abs($config[ConfigNames::AbvColNum]);?>"/>
 			</td>
 			<?php }?>
-    		<?php for($i = 1; $i <= $numberOfBeers; $i++) {
+    		<?php for($i = $startTap; $i <= $endTap; $i++) {
     			$beer = null;
     			if( isset($beers[$i]) ) $beer = $beers[$i];
     			if($tapOrBottle != ConfigNames::CONTAINER_TYPE_KEG  && !isset($beer) ) continue;
@@ -348,7 +354,7 @@
 				<input type="hidden" name="<?php echo ConfigNames::KegColNum;?>" id="<?php echo ConfigNames::KegColNum;?>" value="<?php echo abs($config[ConfigNames::KegColNum]);?>"/>
 			</td>
 			<?php }?>
-    		<?php for($i = 1; $i <= $numberOfBeers; $i++) {
+    		<?php for($i = $startTap; $i <= $endTap; $i++) {
     			$beer = null;
     			if( isset($beers[$i]) ) $beer = $beers[$i];
     			if($tapOrBottle != ConfigNames::CONTAINER_TYPE_KEG  && !isset($beer) ) continue;
@@ -434,7 +440,7 @@
 							 }
 							 if($editting || !( !isset($config[ConfigNames::AmountPerPint]) || $config[ConfigNames::AmountPerPint] == 0)){
 							     $beer['remainAmount'] = convert_volume($beer['remainAmount'], $beer['remainAmountUnit'], $config[ConfigNames::DisplayUnitVolume], FALSE, TRUE);
-							     echo '<div id="pintsLeft"'.((!isset($config[ConfigNames::AmountPerPint]) || $config[ConfigNames::AmountPerPint] == 0)?'style="display:none"':'').'>'.number_format($beer['remainAmount']/($config[ConfigNames::AmountPerPint]==0?1:$config[ConfigNames::AmountPerPint]), 1); echo " Pints Left</div>";
+							     echo '<div id="pintsLeft"'.((!isset($config[ConfigNames::AmountPerPint]) || $config[ConfigNames::AmountPerPint] == 0)?'style="display:none"':'').'>'.number_format((float)$beer['remainAmount']/((float)$config[ConfigNames::AmountPerPint]==0?1:(float)$config[ConfigNames::AmountPerPint]), 1); echo " Pints Left</div>";
 							 }
 							?> 
 							<?php DisplayEditCheckbox($editting, $config, ConfigNames::ShowRemainValue, 'remaining'); ?></h3>
@@ -459,7 +465,7 @@
 				Accolades<br>
 				<input type="hidden" name="<?php echo ConfigNames::AccoladeColNum;?>" id="<?php echo ConfigNames::AccoladeColNum;?>" value="<?php echo abs($config[ConfigNames::AccoladeColNum]);?>"/>
 			</td>
-    		<?php for($i = 1; $i <= $numberOfBeers; $i++) {
+    		<?php for($i = $startTap; $i <= $endTap; $i++) {
     			$beer = null;
     			if( isset($beers[$i]) ) $beer = $beers[$i];
     			if($tapOrBottle != ConfigNames::CONTAINER_TYPE_KEG  && !isset($beer) ) continue;
@@ -493,5 +499,10 @@
 		</tr>
 		<?php }?>
 	<?php }?>
+	<?php 
+        $startTap += $tapsPerPage+1;
+        $endTap = min($startTap + $tapsPerPage, $numberOfBeers);
+        }
+    ?>
 	</tbody>
 </table>
