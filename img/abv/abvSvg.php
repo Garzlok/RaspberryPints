@@ -82,7 +82,7 @@ if($fn == "bottle")$view=($numCups<1?"-100":"-50")." 0 400 300";
           opacity: <?php echo isset($_GET['empty']) ? "0.0" : ".25";  ?>;
   }
   #glass_glare { fill: rgb(255,255,255);
-          opacity: <?php echo isset($_GET['empty']) ? "0.0" :  ($numCups > 1 ? ".40" : ".40");  ?>;
+          opacity: <?php echo isset($_GET['empty']) ? "0.0" :  ($numCups>1?".40":".40");  ?>;
   }
 <?php }
 if($numCups > 1){ ?>

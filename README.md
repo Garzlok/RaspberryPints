@@ -3334,4 +3334,4 @@ This ensures new subscribers immediately see the last published status.
 	
 	v2019.12.01
 		- RandR+ version
-		- 
+		-
