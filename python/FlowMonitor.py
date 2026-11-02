@@ -101,8 +101,8 @@ class FlowMonitor(object):
         return bytes(line[:-leneol]).decode()
     
     def setup(self):
-        if config['flowmon.port'] == "MQTT":
-            return
+        #if config['flowmon.port'] == "MQTT":
+        #    return
         hexfile   = config['pints.dir'] + "/arduino/raspberrypints/raspberrypints.cpp.hex"
         inofile   = config['pints.dir'] + "/arduino/raspberrypints/raspberrypints.ino"
         avrPath   = config['pints.dir'] + "/arduino/avrdude/avrdude"
@@ -256,19 +256,19 @@ class FlowMonitor(object):
         
         if flowMetersEnabld and (GPIO_IMPORT_SUCCESSFUL or config['flowmon.port'] == "MQTT"):
             if self.alaIsAlive is False:
-                if config['flowmon.port'] == "MQTT":
-                    if not MQTT_IMPORT_SUCCESSFUL:
-                        log("MQTT Listener will fail as MQTT not imported")
-                    else:
-                        debug("Creating MQTT Listener")
-                    self.arduino = MQTTListenerThread("MQTT-1", flowMonitor=self, host=config['mqtt.host'], port=config['mqtt.port'],
-                                                       user=config['mqtt.user'], password=config['mqtt.password'])
-                    self.arduino.start()
+                #if config['flowmon.port'] == "MQTT":
+                if not MQTT_IMPORT_SUCCESSFUL:
+                    log("MQTT Listener will fail as MQTT not imported")
                 else:
-                    debug("resetting Arduino")
-                    self.dispatch.resetAlaMode()
-                    debug("Creating Serial Listener")
-                    self.arduino = serial.Serial(self.port, 9600, timeout=.5)
+                    debug("Creating MQTT Listener")
+                self.arduino = MQTTListenerThread("MQTT-1", flowMonitor=self, host=config['mqtt.host'], port=config['mqtt.port'],
+                                                   user=config['mqtt.user'], password=config['mqtt.password'])
+                self.arduino.start()
+                #else:
+                debug("resetting Arduino")
+                self.dispatch.resetAlaMode()
+                debug("Creating Serial Listener")
+                self.arduino = serial.Serial(self.port, 9600, timeout=.5)
             else:
                 self.alaIsAlive = False
                 debug("NOT resetting Arduino")
@@ -323,24 +323,24 @@ class FlowMonitor(object):
         self.reconfigTempProbes()
         
         if flowMetersEnabld and (GPIO_IMPORT_SUCCESSFUL or config['flowmon.port'] == "MQTT"):
-            if config['flowmon.port'] != "MQTT":
-                self.reconfigAlaMode()
-                debug("listening to Arduino")
-            else:
-                debug("listening to MQTT")
+            #if config['flowmon.port'] != "MQTT":
+            self.reconfigAlaMode()
+            debug("listening to Arduino")
+            #else:
+            debug("listening to MQTT")
         else:
             log("Not listening for flowmeters")
         
         try:
             while running: 
-                if config['flowmon.port'] != "MQTT" and flowMetersEnabld and GPIO_IMPORT_SUCCESSFUL:
-                    msg = self.readline_notimeout(False)
-                    if not msg:
-                        continue
-                    if not self.processMsg(msg):
-                        return
-                else:
-                    time.sleep(1)
+                #if config['flowmon.port'] != "MQTT" and flowMetersEnabld and GPIO_IMPORT_SUCCESSFUL:
+                msg = self.readline_notimeout(False)
+                if not msg:
+                    continue
+                if not self.processMsg(msg):
+                    return
+                #else:
+                #    time.sleep(1)
                     
         except:
             print("Unexpected error:", sys.exc_info()[0])
@@ -351,10 +351,10 @@ class FlowMonitor(object):
     def exitFlowMonitor(self): 
         if self.alaIsAlive is False:
             debug("closing serial connection to Arduino...")
-            if config['flowmon.port'] == "MQTT":
-                self.arduino.exit()
-            else:
-                self.arduino.close()
+            #if config['flowmon.port'] == "MQTT":
+            self.arduino.exit()
+            #else:
+            self.arduino.close()
                 
         for item in self.readers:
             if item.is_alive():
@@ -405,7 +405,17 @@ class FlowMonitor(object):
             debug("got a pour: " + msg)
             MCP_RFID = str(reading[1])
             MCP_PIN = str(reading[2])  
-            POUR_COUNT = str(reading[3])         
+            POUR_COUNT = str(reading[3])
+            if len(reading) >= 5:
+                debug("got a RFID: " + reading[4])
+                RAW_RFID = str(reading[4])
+                if not MCP_RFID and RAW_RFID:
+                    debug("Checking RFID: " + reading[4])
+                    proc = subprocess.check_output(["php", self.rfiddir, RAW_RFID])
+                    debug("Got RFID user: " + str(proc))
+                    usrId = int(proc)
+                    if usrId > -1:
+                        MCP_RFID = str(usrId)                        
             # The following 2 lines passes the PIN and PULSE COUNT to the php script
             subprocess.call(["php", self.poursdir, "Pour", MCP_RFID, MCP_PIN, POUR_COUNT])
             self.dispatch.sendflowcount(MCP_RFID, MCP_PIN, POUR_COUNT)
@@ -523,7 +533,7 @@ class FlowMonitor(object):
             
     def fakemonitor(self):
         running = True
-        debug("listening to Arduino")
+        debug("listening to Fake Arduino")
         updatecount = 0;
         pin = 10;
         
@@ -537,6 +547,8 @@ class FlowMonitor(object):
                     continue
                 if not self.processMsg(msg):
                     return
+        except Exception as e:
+            debug("exc " + str(e))          
         finally:
             debug("Closing serial connection to Arduino...")
             debug("Exiting")

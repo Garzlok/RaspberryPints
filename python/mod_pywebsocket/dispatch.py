@@ -35,10 +35,6 @@
 import logging
 import os
 import re
-try:
-    import symbol
-except:
-    pass
 
 from mod_pywebsocket import common
 from mod_pywebsocket import handshake

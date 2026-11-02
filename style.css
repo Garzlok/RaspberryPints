@@ -113,8 +113,9 @@ table td.name{
 }
 .poursbeername{
 	width: 400px;
+	font-size: .65em;
 	text-align: center;
-	vertical-align: middle;	
+	vertical-align: botttom;	
 }
 .poursbeerimg{
 	width:50px ;
@@ -157,11 +158,15 @@ html, body {
 	background-color: #000000;
 	background-size: cover;
 	background-repeat:no-repeat;
+	margin: 0;
+	padding: 0;
+	width: 100vw;
+	height: 100vh;
 	overflow: hidden;
 /*	color: #FFFFFF;
 	font: 1em Roboto, Roboto, arial, verdana, sans-serif; */
-	margin:2px;
-	height:99%;
+/*	margin:2px;
+	height:99%; */
 }
 hr {
 	border: 1.5px dotted #FF6600;
@@ -175,7 +180,7 @@ hr {
 }
 h1 {
 	margin: 0;
-	font-size: 2.5em;
+	font-size: 3.5em;
 	text-shadow: 2px 2px black;
 	color: #FF6600;
 }
@@ -295,7 +300,7 @@ img {
   border-radius: .5em;
   -moz-border-radius: .5em;
   -webkit-border-radius: .5em;
-  font: 2em You Rook Marbelous;
+  font: 3.5em You Rook Marbelous;
   text-shadow: 1px 1px #FF6600;
   font-style: oblique;
   color: #000000;
@@ -507,7 +512,7 @@ img {
 
 .copyright {
 color:#F5F2E8 ;
-font: 1em Pinkoff Caps Bold;
+font: 2em Pinkoff Caps Bold;
 }
 
 .beerfeed {
@@ -553,14 +558,14 @@ table thead th{
 	vertical-align: top;
 }
 table h3 {
-	font: .8em Roboto;
+	font: 1em Roboto;
 	-webkit-margin-before: 5px;
 	-webkit-margin-after: 5px;
 	text-align: center;
 	font-weight: normal;
 }
 table h2 {
-	font: 1em Roboto;
+	font: 1.25em Roboto;
 	-webkit-margin-before: 0px;
 	-webkit-margin-after: 0px;
 	text-align: center;
@@ -569,12 +574,12 @@ table h1{
 	color: #FF6600;
 	opacity:1;
 	display:block;
-	font: 2em You Rook Marbelous;
+	font: 2.5em You Rook Marbelous;
 	font-weight: normal;
 }
 table .subhead{
 	width:100%;
-	font: .9em Roboto;
+	font: 1.5em Roboto;
 	text-align:left;
 }
 p.rating .num {
@@ -595,9 +600,9 @@ p.rating {
 }
 
 table p{
-	font: 1.15em Roboto;
+	font: 1.50em Roboto;
 	color: #FAEBD7;
-	margin-top:20px; 
+	margin-top:10px; 
 }	
 .tooltip {	
   position: relative;	

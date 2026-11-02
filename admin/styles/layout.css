@@ -53,8 +53,8 @@ body {height: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 13px; 
 	
 	/* Navigation Elements */
 	
-		ul.navigation {width: 225px; color: #fff;}
-			ul.navigation li a {text-shadow: 1px 1px 1px #222; background: url(../img/bg_navigation_link.png) repeat-x top; outline: none; width: 205px; display: block; color: #fff; text-decoration: none; padding: 10px; height: 15px;}
+		ul.navigation {width: 225px; color: #fff; font: roboto;}
+			ul.navigation li a {font: roboto; font-size: 1.25em; text-shadow: 1px 1px 1px #222; background: url(../img/bg_navigation_link.png) repeat-x top; outline: none; width: 205px; display: block; color: #fff; text-decoration: none; padding: 10px; height: 15px;}
 				ul.navigation li a:hover {color: #ccc; background: #333;}
 
 			ul#nav li a.heading, a.collapsed, a.expanded, ul.navigation li.selected{line-height: 1.2em; width: 205px; font-size: 16px; font-weight: 700; padding: 9px 10px; display: block; color: #fff; cursor: pointer;}
